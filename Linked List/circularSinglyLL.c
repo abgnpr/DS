@@ -1,4 +1,4 @@
-// Circular Linked List
+// Circular Singly Linked List
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -45,7 +45,7 @@ void deleteList(CircularLinkedList *CLL)
   }
 }
 
-// Inserts a node at the beginning of a Circular Linked List
+// Inserts a node at the beginning
 void insertBeg(CircularLinkedList *CLL, int data)
 {
   Node *newNode = createNewNode(data);
@@ -76,7 +76,7 @@ void insertBeg(CircularLinkedList *CLL, int data)
   CLL->start = newNode;
 }
 
-// Inserts a node at the end of a Circular Linked List
+// Inserts a node at the end
 void insertEnd(CircularLinkedList *CLL, int data)
 {
   Node *newNode = createNewNode(data);
@@ -104,7 +104,7 @@ void insertEnd(CircularLinkedList *CLL, int data)
   newNode->next = CLL->start;
 }
 
-// Deletes the first node from a Circular Linked List
+// Deletes the first node
 void deleteFirst(CircularLinkedList *CLL)
 {
   // return if list is empty
@@ -136,7 +136,7 @@ void deleteFirst(CircularLinkedList *CLL)
   CLL->start = node->next;
 }
 
-// Deletes the last node from a Circular Linked List
+// Deletes the last node
 void deleteLast(CircularLinkedList *CLL)
 {
   // return if list is empty
@@ -165,7 +165,7 @@ void deleteLast(CircularLinkedList *CLL)
   node->next = CLL->start;
 }
 
-// Traverses and prints data of each node in a Circular Linked List
+// Traverses and prints data of each node
 void traverse(CircularLinkedList *CLL)
 {
   Node *node;
@@ -186,7 +186,7 @@ int main(void)
   CircularLinkedList *CLL = newCircularLinkedList();
 
   // insert at beginning
-  printf("\n@BEGINNING\nOriginal:  ");
+  printf("\n@BEGINNING\nOriginal : ");
   traverse(CLL);
   for (int i = 1; i <= 5; ++i)
   {
@@ -197,7 +197,7 @@ int main(void)
   deleteList(CLL);
 
   // insert at end
-  printf("\n@END\nOriginal:  ");
+  printf("\n@END\nOriginal : ");
   traverse(CLL);
   for (int i = 1; i <= 5; i++)
   {
@@ -210,7 +210,7 @@ int main(void)
   // delete first
   for (int i = 1; i <= 5; ++i)
     insertEnd(CLL, i);
-  printf("\n^FIRST\nOriginal:  ");
+  printf("\n^FIRST\nOriginal : ");
   traverse(CLL);
   for (int i = 1; i <= 5; ++i)
   {
@@ -222,7 +222,7 @@ int main(void)
   // delete last
   for (int i = 1; i <= 5; ++i)
     insertEnd(CLL, i);
-  printf("\n^LAST\nOriginal:  ");
+  printf("\n^LAST\nOriginal : ");
   traverse(CLL);
   for (int i = 5; i >= 1; --i)
   {
