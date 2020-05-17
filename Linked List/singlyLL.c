@@ -83,18 +83,60 @@ void insertEnd(SinglyLinkedList *SLL, int data) {
 
 // Insert after node with data=val
 void insertAfter(int val, SinglyLinkedList *SLL, int data) {
-  // find node where node.data == val
-  for (Node *current = SLL->start; current != NULL; current = current->next) {
-    if (val == current->data) {
+  // scan all nodes
+  for (Node *cur = SLL->start; cur != NULL; cur = cur->next) {
+    // if current node data matches `val`
+    if (val == cur->data) {
       // create new
       Node *newNode = createNewNode(data);
       // set next of new to next of current
-      newNode->next = current->next;
+      newNode->next = cur->next;
       // set next of current to new
-      current->next = newNode;
+      cur->next = newNode;
       // done
       return;
     }
+  }
+}
+
+// Insert before node with data=val
+void insertBefore(int val, SinglyLinkedList *SLL, int data) {
+  Node *cur,*pre, *newNode;
+
+  // if first node data == val
+  if (val == SLL->start->data) {
+    // create new
+    newNode = createNewNode(data);
+    // set next of new to start
+    newNode->next = SLL->start;
+    // set start to new
+    SLL->start = newNode;
+    // done
+    return;
+  }
+  
+  // else
+  // begin with first and second
+  pre = SLL->start;
+  cur = SLL->start->next;
+
+  // scan all nodes: from 2nd to last
+  while (cur != NULL) {
+    // if current node data matches val
+    if (val == cur->data) {
+      // create new
+      newNode = createNewNode(data);
+      // set next of new to current
+      newNode->next = cur;
+      // set next of previous to new
+      pre->next = newNode;
+      // done
+      return;
+    }
+
+    // move to next pair
+    pre = cur;
+    cur = cur->next;
   }
 }
 
@@ -145,4 +187,17 @@ int main(void) {
     traverse(SLL);
   }
   deleteList(SLL);
+
+  // insert before
+  for (int i = 0; i < 5; ++i)
+    insertEnd(SLL, i);
+  printf("\nINSERT:BEFORE\nOriginal   : ");
+  traverse(SLL);
+  for (int i = 0; i < 5; ++i) {
+    printf("in(%d)bf(%d) : ", i+5, i);
+    insertBefore(i, SLL, i+5);
+    traverse(SLL);
+  }
+  deleteList(SLL);
+
 }
