@@ -61,6 +61,8 @@ void insertEnd(DoublyLinkedList* DLL, int data)
 
     // if the list is empty
     if (DLL->start == NULL) {
+        // new at first will have no previous
+        newNode->prev = NULL;
         // set new as first
         DLL->start = newNode;
         return;
@@ -88,14 +90,14 @@ void insertAfter(int val, DoublyLinkedList* DLL, int data)
         if (val == cur->data) {
             // create new
             Node* newNode = createNewNode(data);
-            // set next of new to next of current
-            newNode->next = cur->next;
-            // set previous of new to current
-            newNode->prev = cur;
             // if next of current exists
             if (cur->next != NULL)
                 // set its previous to new
                 cur->next->prev = newNode;
+            // set next of new to next of current
+            newNode->next = cur->next;
+            // set previous of new to current
+            newNode->prev = cur;
             // set next of current to new
             cur->next = newNode;
 
@@ -107,18 +109,13 @@ void insertAfter(int val, DoublyLinkedList* DLL, int data)
 
 // Inserts before the node whose data is `val`
 void insertBefore(int val, DoublyLinkedList* DLL, int data)
-{   
+{
     // scan all nodes
     for (Node* cur = DLL->start; cur != NULL; cur = cur->next) {
-        printf("%d\n", cur->data);
         // if current node data matches `val`
         if (val == cur->data) {
             // create new
             Node* newNode = createNewNode(data);
-            // set next of new to current
-            newNode->next = cur;
-            // set previous of new to previous of current
-            newNode->prev = cur->prev;
             // if previous of current exists
             if (cur->prev != NULL)
                 // set its next to new
@@ -126,6 +123,10 @@ void insertBefore(int val, DoublyLinkedList* DLL, int data)
             else
                 // else this should be new first
                 DLL->start = newNode;
+            // set next of new to current
+            newNode->next = cur;
+            // set previous of new to previous of current
+            newNode->prev = cur->prev;
             // set previous of current to new
             cur->prev = newNode;
             // done
@@ -148,6 +149,10 @@ void deleteFirst(DoublyLinkedList* DLL)
     DLL->start = first->next;
     // delete first
     free(first);
+    // if the list has not become empty
+    if (DLL->start != NULL)
+        // new start will have no previous
+        DLL->start->prev = NULL;
 }
 
 // Delete the last node
@@ -157,24 +162,22 @@ void deleteLast(DoublyLinkedList* DLL)
     if (DLL->start == NULL)
         return;
 
-    // if there is only one
-    if (DLL->start->next == NULL) {
-        free(DLL->start);
-        DLL->start = NULL;
-        return;
-    }
-
     // else
-    // traverse to second last
+    // go to last
     Node* node = DLL->start;
-    while (node->next->next != NULL)
+    while (node->next != NULL)
         node = node->next;
 
-    // delete its next (last)
-    free(node->next);
+    // if previous of last exists
+    if (node->prev != NULL)
+        // set it as last
+        node->prev->next = NULL;
+    else // last is also the first
+        // list is going to be empty
+        DLL->start = NULL;
 
-    // set it as last
-    node->next = NULL;
+    // delete last
+    free(node);
 }
 
 // Deletes a node after the node whose data is val
@@ -185,24 +188,55 @@ void deleteAfter(int val, DoublyLinkedList* DLL)
         return;
 
     // else
-    // begin with first
+    // scan all nodes upto second last
     Node* cur = DLL->start;
-    // traverse until we reach last
     while (cur->next != NULL) {
-
-        // if val equals curent node data
+        // if current node data matches `val`
         if (val == cur->data) {
             // set next to next of current
             Node* next = cur->next;
             // set next of current to next of next
             cur->next = next->next;
+            // if next of next exists
+            if (next->next != NULL)
+                // set its previous to current
+                next->next->prev = cur;
             // delete the next
             free(next);
             // done
             return;
         }
-
         // move to the next
+        cur = cur->next;
+    }
+}
+
+// Deletes the node whose data is `val`
+void delete (int val, DoublyLinkedList* DLL)
+{
+    // return if the list is empty
+    if (DLL->start == NULL)
+        return;
+
+    // scan all nodes
+    Node* cur = DLL->start;
+    while (cur != NULL) {
+        // if current node data matches `val`
+        if (val == cur->data) {
+            // if next of current exists
+            if (cur->next != NULL)
+                // set its previous to previous of current
+                cur->next->prev = cur->prev;
+            // if previous of current exists
+            if (cur->prev != NULL)
+                // set its next to next of current
+                cur->prev->next = cur->next;
+            else // current is the first node
+                // set start to its next
+                DLL->start = cur->next;
+            free(cur);
+            return;
+        }
         cur = cur->next;
     }
 }
@@ -295,7 +329,6 @@ int main(void)
     deleteList(DLL);
     // ------------------------------------------
 
-/*
     // delete first
     // ------------------------------------------
     for (int i = 1; i <= 5; ++i)
@@ -328,22 +361,38 @@ int main(void)
     // ------------------------------------------
     for (int i = 1; i <= 5; ++i)
         insertEnd(DLL, i);
-    printf("\nDELETE:AFTER\nOriginal   : ");
+    printf("\nDELETE:AFTER\nOriginal      : ");
     traverse(DLL);
 
     printf("deleteAfter(%d): ", 1);
     deleteAfter(1, DLL);
     traverse(DLL);
-    printf("deleteAfter(%d): ", 3);
-    deleteAfter(3, DLL);
-    traverse(DLL);
-    printf("deleteAfter(%d): ", 5);
-    deleteAfter(5, DLL);
+    printf("deleteAfter(%d): ", 4);
+    deleteAfter(4, DLL);
     traverse(DLL);
 
     deleteList(DLL);
     // ------------------------------------------
-*/
+
+    // delete after
+    // ------------------------------------------
+    for (int i = 1; i <= 5; ++i)
+        insertEnd(DLL, i);
+    printf("\nDELETE^VAL\nOriginal : ");
+    traverse(DLL);
+
+    printf("delete(%d): ", 1);
+    delete (1, DLL);
+    traverse(DLL);
+    printf("delete(%d): ", 4);
+    delete (4, DLL);
+    traverse(DLL);
+    printf("delete(%d): ", 5);
+    delete (5, DLL);
+    traverse(DLL);
+
+    deleteList(DLL);
+    // ------------------------------------------
 
     free(DLL);
     printf("\n");
