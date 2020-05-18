@@ -31,18 +31,22 @@ void insertBeg(DoublyLinkedList* DLL, int data)
 {
     // create new
     Node* newNode = createNewNode(data);
+    // first will have no previous
+    newNode->prev = NULL;
 
     // if the list is empty
     if (DLL->start == NULL) {
         // set new as first and last
         DLL->start = newNode;
-        DLL->start->next = NULL;
+        newNode->next = NULL;
         return;
     }
 
     // else
     // set next of new to start
     newNode->next = DLL->start;
+    // set prev of start to new
+    DLL->start->prev = newNode;
     // set start to new
     DLL->start = newNode;
 }
@@ -52,12 +56,13 @@ void insertEnd(DoublyLinkedList* DLL, int data)
 {
     // create new
     Node* newNode = createNewNode(data);
+    // last will have no next
+    newNode->next = NULL;
 
     // if the list is empty
     if (DLL->start == NULL) {
-        // set new as first and last
+        // set new as first
         DLL->start = newNode;
-        DLL->start->next = NULL;
         return;
     }
 
@@ -250,6 +255,7 @@ int main(void)
     deleteList(DLL);
     // ------------------------------------------
 
+    /*
     // insert at end
     // ------------------------------------------
     printf("\nINSERT@END\nOriginal : ");
@@ -343,7 +349,9 @@ int main(void)
 
     deleteList(DLL);
     // ------------------------------------------
+*/
 
+    free(DLL);
     printf("\n");
     return EXIT_SUCCESS;
 }
