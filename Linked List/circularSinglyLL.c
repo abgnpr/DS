@@ -26,20 +26,6 @@ CircularLinkedList* newCircularLinkedList()
     return newCLL;
 }
 
-void deleteList(CircularLinkedList* CLL)
-{
-    Node *node, *nodeToFree;
-    if ((node = CLL->start) != NULL) {
-        do {
-            nodeToFree = node;
-            node = node->next;
-            free(nodeToFree);
-        } while (node != CLL->start);
-
-        CLL->start = NULL;
-    }
-}
-
 // Inserts a node at the beginning
 void insertBeg(CircularLinkedList* CLL, int data)
 {
@@ -114,7 +100,7 @@ void deleteFirst(CircularLinkedList* CLL)
 
     // else
     // go to the last node
-    Node* node;
+    Node* node = CLL->start;
     while (node->next != CLL->start)
         node = node->next;
 
@@ -156,14 +142,29 @@ void deleteLast(CircularLinkedList* CLL)
     node->next = CLL->start;
 }
 
+// Deletes all nodes
+void deleteList(CircularLinkedList* CLL)
+{
+    Node *node, *nodeToFree;
+    if ((node = CLL->start) != NULL) {
+        do {
+            nodeToFree = node;
+            node = node->next;
+            free(nodeToFree);
+        } while (node != CLL->start);
+
+        CLL->start = NULL;
+    }
+}
+
 // Traverses and prints data of each node
 void traverse(CircularLinkedList* CLL)
 {
     Node* node;
     if ((node = CLL->start) != NULL) {
-        printf("[ %d ]", node->data);
+        printf("[%d]", node->data);
         while ((node = node->next) != CLL->start)
-            printf("->[ %d ]", node->data);
+            printf(" -> [%d]", node->data);
         printf("\n");
     } else
         printf("(nil)\n");
@@ -197,10 +198,10 @@ int main(void)
     // delete first
     for (int i = 1; i <= 5; ++i)
         insertEnd(CLL, i);
-    printf("\n^FIRST\nOriginal : ");
+    printf("\n^FIRST\nOriginal     : ");
     traverse(CLL);
     for (int i = 1; i <= 5; ++i) {
-        printf("delete(%d): ", i);
+        printf("deleteFirst(): ");
         deleteFirst(CLL);
         traverse(CLL);
     }
