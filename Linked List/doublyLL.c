@@ -31,7 +31,7 @@ void insertBeg(DoublyLinkedList* DLL, int data)
 {
     // create new
     Node* newNode = createNewNode(data);
-    // first will have no previous
+    // new at first will have no previous
     newNode->prev = NULL;
 
     // if the list is empty
@@ -56,7 +56,7 @@ void insertEnd(DoublyLinkedList* DLL, int data)
 {
     // create new
     Node* newNode = createNewNode(data);
-    // last will have no next
+    // new at last will have no next
     newNode->next = NULL;
 
     // if the list is empty
@@ -75,8 +75,8 @@ void insertEnd(DoublyLinkedList* DLL, int data)
     // set its next to new
     node->next = newNode;
 
-    // set the new as last
-    newNode->next = NULL;
+    // set previous of new to last
+    newNode->prev = node;
 }
 
 // Inserts after the node whose data is `val`
@@ -90,8 +90,15 @@ void insertAfter(int val, DoublyLinkedList* DLL, int data)
             Node* newNode = createNewNode(data);
             // set next of new to next of current
             newNode->next = cur->next;
+            // set previous of new to current
+            newNode->prev = cur;
+            // if next of current exists
+            if (cur->next != NULL)
+                // set its previous to new
+                cur->next->prev = newNode;
             // set next of current to new
             cur->next = newNode;
+
             // done
             return;
         }
@@ -100,43 +107,30 @@ void insertAfter(int val, DoublyLinkedList* DLL, int data)
 
 // Inserts before the node whose data is `val`
 void insertBefore(int val, DoublyLinkedList* DLL, int data)
-{
-    Node *cur, *pre, *newNode;
-
-    // if first node data == val
-    if (val == DLL->start->data) {
-        // create newi
-        newNode = createNewNode(data);
-        // set next of new to start
-        newNode->next = DLL->start;
-        // set start to new
-        DLL->start = newNode;
-        // done
-        return;
-    }
-
-    // else
-    // begin with first and second
-    pre = DLL->start;
-    cur = DLL->start->next;
-
-    // scan all nodes: from 2nd to last
-    while (cur != NULL) {
-        // if current node data matches val
+{   
+    // scan all nodes
+    for (Node* cur = DLL->start; cur != NULL; cur = cur->next) {
+        printf("%d\n", cur->data);
+        // if current node data matches `val`
         if (val == cur->data) {
             // create new
-            newNode = createNewNode(data);
+            Node* newNode = createNewNode(data);
             // set next of new to current
             newNode->next = cur;
-            // set next of previous to new
-            pre->next = newNode;
+            // set previous of new to previous of current
+            newNode->prev = cur->prev;
+            // if previous of current exists
+            if (cur->prev != NULL)
+                // set its next to new
+                cur->prev->next = newNode;
+            else
+                // else this should be new first
+                DLL->start = newNode;
+            // set previous of current to new
+            cur->prev = newNode;
             // done
             return;
         }
-
-        // move to next pair
-        pre = cur;
-        cur = cur->next;
     }
 }
 
@@ -255,7 +249,6 @@ int main(void)
     deleteList(DLL);
     // ------------------------------------------
 
-    /*
     // insert at end
     // ------------------------------------------
     printf("\nINSERT@END\nOriginal : ");
@@ -302,6 +295,7 @@ int main(void)
     deleteList(DLL);
     // ------------------------------------------
 
+/*
     // delete first
     // ------------------------------------------
     for (int i = 1; i <= 5; ++i)
