@@ -104,6 +104,7 @@ void insertAfter(int val, SinglyLinkedList* SLL, int data)
     }
 }
 
+// review
 // Inserts before the node whose data is `val`
 void insertBefore(int val, SinglyLinkedList* SLL, int data)
 {
@@ -111,7 +112,7 @@ void insertBefore(int val, SinglyLinkedList* SLL, int data)
 
     // if first node data == val
     if (val == SLL->start->data) {
-        // create newi
+        // create new
         newNode = createNewNode(data);
         // set next of new to start
         newNode->next = SLL->start;
@@ -162,6 +163,7 @@ void deleteFirst(SinglyLinkedList* SLL)
     free(first);
 }
 
+// review
 // Delete the last node
 void deleteLast(SinglyLinkedList* SLL)
 {
@@ -217,6 +219,12 @@ void deleteAfter(int val, SinglyLinkedList* SLL)
         // move to the next
         cur = cur->next;
     }
+}
+
+// add
+void delete (int val, SinglyLinkedList* SLL)
+{
+
 }
 
 // Traverses and prints data of each node
@@ -291,7 +299,7 @@ int main(void)
     printf("ins(%d)bf(%d): ", 8, 4);
     insertBefore(4, SLL, 8);
     traverse(SLL);
-    
+
     deleteList(SLL);
     // ------------------------------------------
 
