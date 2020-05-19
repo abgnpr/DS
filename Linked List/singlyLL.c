@@ -104,46 +104,27 @@ void insertAfter(int val, SinglyLinkedList* SLL, int data)
     }
 }
 
-// review
 // Inserts before the node whose data is `val`
 void insertBefore(int val, SinglyLinkedList* SLL, int data)
 {
-    Node *cur, *pre, *newNode;
-
-    // if first node data == val
-    if (val == SLL->start->data) {
-        // create new
-        newNode = createNewNode(data);
-        // set next of new to start
-        newNode->next = SLL->start;
-        // set start to new
-        SLL->start = newNode;
-        // done
-        return;
-    }
-
-    // else
-    // begin with first and second
-    pre = SLL->start;
-    cur = SLL->start->next;
-
-    // scan all nodes: from 2nd to last
-    while (cur != NULL) {
-        // if current node data matches val
+    // scan all nodes
+    for (Node *pre = NULL, *cur = SLL->start; cur != NULL; pre = cur, cur = cur->next) {
+        // if current node data matches `val`
         if (val == cur->data) {
             // create new
-            newNode = createNewNode(data);
+            Node* newNode = createNewNode(data);
+            // if previous of current exists
+            if (pre != NULL)
+                // set next of previous to new
+                pre->next = newNode;
+            else // when current is first
+                // set start to new
+                SLL->start = newNode;
             // set next of new to current
             newNode->next = cur;
-            // set next of previous to new
-            pre->next = newNode;
             // done
             return;
         }
-
-        // move to next pair
-        pre = cur;
-        cur = cur->next;
     }
 }
 
@@ -171,27 +152,30 @@ void deleteLast(SinglyLinkedList* SLL)
     if (SLL->start == NULL)
         return;
 
-    // if there is only one
-    if (SLL->start->next == NULL) {
-        free(SLL->start);
-        SLL->start = NULL;
-        return;
+    // else
+    // begin with first
+    Node* pre = NULL;
+    Node* cur = SLL->start;
+
+    // go to the last node
+    while (cur->next != NULL) {
+        pre = cur,
+        cur = cur->next;
     }
 
-    // else
-    // traverse to second last
-    Node* node = SLL->start;
-    while (node->next->next != NULL)
-        node = node->next;
+    // if previous of current exists
+    if (pre != NULL)
+        // set it as last
+        pre->next = NULL;
+    else // when last is also the first
+        // list will be empty after delete
+        SLL->start = NULL;
 
-    // delete its next (last)
-    free(node->next);
-
-    // set it as last
-    node->next = NULL;
+    // delete last
+    free(cur);
 }
 
-// Deletes a node after the node whose data is val
+// Deletes a node after the node whose data is `val`
 void deleteAfter(int val, SinglyLinkedList* SLL)
 {
     // return if the list is empty
@@ -204,7 +188,7 @@ void deleteAfter(int val, SinglyLinkedList* SLL)
     // traverse until we reach last
     while (cur->next != NULL) {
 
-        // if val equals curent node data
+        // if curent node data matches `val`
         if (val == cur->data) {
             // set next to next of current
             Node* next = cur->next;
@@ -221,10 +205,41 @@ void deleteAfter(int val, SinglyLinkedList* SLL)
     }
 }
 
-// add
+// Deletes the node whose data is `val`
 void delete (int val, SinglyLinkedList* SLL)
 {
+    // return if the list is empty
+    if (SLL->start == NULL)
+        return;
 
+    // else
+    // begin with first
+    Node *pre, *cur;
+    pre = NULL;
+    cur = SLL->start;
+
+    // scan all nodes
+    while (cur != NULL) {
+
+        // if curent node data matches `val`
+        if (val == cur->data) {
+            // if previous of current exists
+            if (pre != NULL)
+                // set its next to next of current
+                pre->next = cur->next;
+            else // when current is first
+                // set new start to next of current
+                SLL->start = cur->next;
+            // delete current
+            free(cur);
+            // done
+            return;
+        }
+
+        // move to next nodes
+        pre = cur;
+        cur = cur->next;
+    }
 }
 
 // Traverses and prints data of each node
@@ -299,6 +314,9 @@ int main(void)
     printf("ins(%d)bf(%d): ", 8, 4);
     insertBefore(4, SLL, 8);
     traverse(SLL);
+    printf("ins(%d)bf(%d): ", 7, 5);
+    insertBefore(5, SLL, 7);
+    traverse(SLL);
 
     deleteList(SLL);
     // ------------------------------------------
@@ -346,6 +364,26 @@ int main(void)
     traverse(SLL);
     printf("deleteAfter(%d): ", 5);
     deleteAfter(5, SLL);
+    traverse(SLL);
+
+    deleteList(SLL);
+    // ------------------------------------------
+
+    // delete
+    // ------------------------------------------
+    for (int i = 1; i <= 5; ++i)
+        insertEnd(SLL, i);
+    printf("\nDELETE^VAL\nOriginal : ");
+    traverse(SLL);
+
+    printf("delete(%d): ", 1);
+    delete (1, SLL);
+    traverse(SLL);
+    printf("delete(%d): ", 4);
+    delete (4, SLL);
+    traverse(SLL);
+    printf("delete(%d): ", 5);
+    delete (5, SLL);
     traverse(SLL);
 
     deleteList(SLL);
