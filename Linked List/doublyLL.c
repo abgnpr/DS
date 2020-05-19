@@ -374,7 +374,7 @@ int main(void)
     deleteList(DLL);
     // ------------------------------------------
 
-    // delete after
+    // delete
     // ------------------------------------------
     for (int i = 1; i <= 5; ++i)
         insertEnd(DLL, i);
