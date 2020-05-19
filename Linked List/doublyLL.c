@@ -212,7 +212,7 @@ void deleteAfter(int val, DoublyLinkedList* DLL)
 }
 
 // Deletes the node whose data is `val`
-void delete (int val, DoublyLinkedList* DLL)
+void deleteNode (int val, DoublyLinkedList* DLL)
 {
     // return if the list is empty
     if (DLL->start == NULL)

@@ -205,7 +205,7 @@ void deleteAfter(int val, SinglyLinkedList* SLL)
 }
 
 // Deletes the node whose data is `val`
-void delete (int val, SinglyLinkedList* SLL)
+void deleteNode (int val, SinglyLinkedList* SLL)
 {
     // return if the list is empty
     if (SLL->start == NULL)
