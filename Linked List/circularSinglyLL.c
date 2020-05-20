@@ -176,6 +176,7 @@ int main(void)
     CircularLinkedList* CLL = newCircularLinkedList();
 
     // insert at beginning
+    // ------------------------------------------
     printf("\n@BEGINNING\nOriginal : ");
     traverse(CLL);
     for (int i = 1; i <= 5; ++i) {
@@ -184,8 +185,10 @@ int main(void)
         traverse(CLL);
     }
     deleteList(CLL);
+    // ------------------------------------------
 
     // insert at end
+    // ------------------------------------------
     printf("\n@END\nOriginal : ");
     traverse(CLL);
     for (int i = 1; i <= 5; i++) {
@@ -194,8 +197,10 @@ int main(void)
         traverse(CLL);
     }
     deleteList(CLL);
+    // ------------------------------------------
 
     // delete first
+    // ------------------------------------------
     for (int i = 1; i <= 5; ++i)
         insertEnd(CLL, i);
     printf("\n^FIRST\nOriginal     : ");
@@ -205,8 +210,10 @@ int main(void)
         deleteFirst(CLL);
         traverse(CLL);
     }
+    // ------------------------------------------
 
     // delete last
+    // ------------------------------------------
     for (int i = 1; i <= 5; ++i)
         insertEnd(CLL, i);
     printf("\n^LAST\nOriginal : ");
@@ -216,10 +223,10 @@ int main(void)
         deleteLast(CLL);
         traverse(CLL);
     }
-
     deleteList(CLL);
-    free(CLL);
+    // ------------------------------------------
 
+    free(CLL);
     printf("\n");
     return EXIT_SUCCESS;
 }
