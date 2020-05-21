@@ -44,7 +44,8 @@ void push(Stack* S, Element* e)
     S->HEAD = e;
 }
 
-// Removes an elemet from the top of stack S and returns it
+// Removes an element from the top of stack S 
+// and returns a pointer to it
 Element* pop(Stack* S)
 {
     if (stackEmpty(S)) {
@@ -58,7 +59,7 @@ Element* pop(Stack* S)
     }
 }
 
-// Returns the topmost element
+// Returns a pointer to the topmost element
 Element* peek(Stack* S)
 {
     return S->HEAD;
