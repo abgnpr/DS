@@ -27,6 +27,7 @@ typedef struct Stack {
 Stack* createStack()
 {
     Stack* S = (Stack*)malloc(sizeof(Stack));
+    S->HEAD = NULL;
     return S;
 }
 
@@ -60,10 +61,7 @@ Element* pop(Stack* S)
 // Returns the topmost element
 Element* peek(Stack* S)
 {
-    if (stackEmpty(S))
-        return NULL;
-    else
-        return S->HEAD;
+    return S->HEAD;
 }
 
 // Prints the stack S
