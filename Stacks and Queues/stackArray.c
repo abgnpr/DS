@@ -8,16 +8,6 @@
 #define TRUE 1
 #define FALSE 0
 
-// returs the maximum of digits that `int` can hold
-int maxIntDigits()
-{
-    int digits = 0;
-    int maxInt = INT32_MAX;
-    while ((maxInt /= 10) > 0)
-        digits++;
-    return digits;
-}
-
 typedef struct Stack {
     int size;
     int top;
@@ -83,6 +73,16 @@ void print(const Stack* S)
     printf("\n");
 }
 
+// returs the maximum of digits that `int` can hold
+int maxIntDigits()
+{
+    int digits = 0;
+    int maxInt = INT32_MAX;
+    while ((maxInt /= 10) > 0)
+        digits++;
+    return digits;
+}
+
 // driver
 int main(void)
 {
@@ -115,6 +115,7 @@ int main(void)
                 pop(stk);
                 print(stk);
 
+            // `pk` to peek
             } else if (strcmp(input, "pk") == 0) {
                 peek(stk);
 
