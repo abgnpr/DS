@@ -55,19 +55,15 @@ void main(void)
         if (ch == ')' || ch == '}' || ch == ']') {
             if (stackEmpty())
                 break;
-            if (peek() == '(' && ch == ')')
-                pop();
-            else 
-            if (peek() == '{' && ch == '}')
-                pop();
-            else 
-            if (peek() == '[' && ch == ']')
+            if ((peek() == '(' && ch == ')')
+            ||  (peek() == '{' && ch == '}')
+            ||  (peek() == '[' && ch == ']'))
                 pop();
         }
     }
 
     if (stackEmpty() && i == len)
         printf("Valid\n");
-    else 
+    else
         printf("Invalid\n");
 }
