@@ -49,8 +49,11 @@ void infixToPostfix (char infix[MAX], char postfix[MAX])
     int len = append(infix, ')');
 
     int p = 0; // counter for `postfix`
+    char c;
+
     for (int i = 0; i < len; ++i) {
-        char c = infix[i];
+        
+        c = infix[i];
 
         if (c == '(') push('(');
 
