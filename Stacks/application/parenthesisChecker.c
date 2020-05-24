@@ -7,27 +7,9 @@
 
 char stk[MAX];
 int top = -1;
-
-int stackEmpty()
-{
-    return top == -1 ? 1 : 0;
-}
-
-void push(char c)
-{
-    if (top == MAX - 1)
-        printf("Overflow\n");
-    else
-        stk[++top] = c;
-}
-
-char pop()
-{
-    if (stackEmpty())
-        printf("Underflow\n");
-    else
-        return stk[top--];
-}
+int stackEmpty() { return top == -1 ? 1 : 0; }
+void push(char c) { stk[++top] = c; }
+char pop() { return stk[top--]; }
 
 char peek()
 {
@@ -56,8 +38,8 @@ void main(void)
             if (stackEmpty())
                 break;
             if ((peek() == '(' && ch == ')')
-            ||  (peek() == '{' && ch == '}')
-            ||  (peek() == '[' && ch == ']'))
+                || (peek() == '{' && ch == '}')
+                || (peek() == '[' && ch == ']'))
                 pop();
         }
     }
