@@ -10,14 +10,7 @@ int top = -1;
 int stackEmpty() { return top == -1 ? 1 : 0; }
 void push(char c) { stk[++top] = c; }
 char pop() { return stk[top--]; }
-
-char peek()
-{
-    if (stackEmpty())
-        printf("nil\n");
-    else
-        return stk[top];
-}
+char peek() { return stk[top]; }
 
 void main(void)
 {
