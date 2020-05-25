@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-typedef struct Node {
+typedef struct {
     int data;
     struct Node *left, *right;
 } Node, BST;
@@ -16,6 +16,7 @@ Node* createNewNode(int data)
 
 BST* insert(BST* T, int data)
 {
+
     if (T == NULL)
         T = createNewNode(data);
 
