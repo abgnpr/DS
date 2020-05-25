@@ -18,7 +18,7 @@
     - Infix To Postfix
 
 
-### Queue
+### Queues
 
 *   to be revised
 
