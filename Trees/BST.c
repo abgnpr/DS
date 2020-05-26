@@ -16,6 +16,27 @@ Node* createNewNode(int data)
 
 BST* createBST() { return NULL; }
 
+BST* deleteBST(BST* T)
+{
+    if (T) {
+        deleteBST(T->left);
+        deleteBST(T->right);
+        free(T);
+    }
+    return NULL;
+}
+
+BST* mirror(BST* T)
+{
+    if (T) {
+        mirror(T->left);
+        mirror(T->right);
+        BST* temp = T->left;
+        T->left = T->right;
+        T->right = temp;
+    }
+}
+
 Node* smallest(BST* T)
 {
     Node* node = T;
@@ -132,32 +153,66 @@ BST* del(BST* T, int data)
     return T;
 }
 
-void print(int n) { printf("%d ", n); }
+static inline int max(int a, int b) { return a > b ? a : b; }
+int height(BST* T)
+{
+    if (T == NULL)
+        return 0;
 
-void preOrder(BST* T, void (*f)(int))
+    return 1 + max(height(T->left), height(T->right));
+}
+
+int totalNodes(BST* T)
+{
+    if (T == NULL)
+        return 0;
+
+    return 1 + totalNodes(T->left) + totalNodes(T->right);
+}
+
+int totalInternalNodes(BST* T)
+{
+    if (T == NULL || (T->left == NULL && T->right == NULL))
+        return 0;
+
+    return 1 + totalInternalNodes(T->left) + totalInternalNodes(T->right);
+}
+
+int totalExternalNodes(BST* T)
+{
+    if (T == NULL)
+        return 0;
+
+    if (T->left == NULL && T->right == NULL)
+        return 1;
+
+    return totalExternalNodes(T->left) + totalExternalNodes(T->right);
+}
+
+void preOrder(BST* T)
 {
     if (T) {
-        (*f)(T->data);
-        preOrder(T->left, *f);
-        preOrder(T->right, *f);
+        printf("%d ", T->data);
+        preOrder(T->left);
+        preOrder(T->right);
     }
 }
 
-void inOrder(BST* T, void (*f)(int))
+void inOrder(BST* T)
 {
     if (T) {
-        inOrder(T->left, *f);
-        (*f)(T->data);
-        inOrder(T->right, *f);
+        inOrder(T->left);
+        printf("%d ", T->data);
+        inOrder(T->right);
     }
 }
 
-void postOrder(BST* T, void (*f)(int))
+void postOrder(BST* T)
 {
     if (T) {
-        postOrder(T->left, *f);
-        postOrder(T->right, *f);
-        (*f)(T->data);
+        postOrder(T->left);
+        postOrder(T->right);
+        printf("%d ", T->data);
     }
 }
 
@@ -165,27 +220,50 @@ void main(void)
 {
     BST* T = createBST();
 
+    // insert some elements
     for (int i = 6; i <= 10; ++i)
         T = insert(T, i);
-
     for (int i = 1; i <= 5; ++i)
         T = insert(T, i);
 
-    preOrder(T, print);
+    printf("\nPreorder Traversal: \n");
+    preOrder(T);
     printf("\n\n");
 
-    inOrder(T, print);
+    printf("Inorder Traversal: \n");
+    inOrder(T);
     printf("\n\n");
 
-    postOrder(T, print);
+    printf("Postorder Traversal: \n");
+    postOrder(T);
     printf("\n\n");
 
     printf("Biggest: %d\n\n", biggest(T)->data);
     printf("Smallest: %d\n\n", smallest(T)->data);
 
-    for (int i = 11; i >= -2; --i) {
-        T = del(T, i);
-        inOrder(T, print);
-        printf("\n");
+    // delete some elements
+    for (int i = 1; i <= 10; i += 2) {
+        del(T, i);
+        printf("delete(%d): ", i);
+        inOrder(T);
+        printf("\n\n");
     }
+
+    printf("Height: %d\n\n", height(T));
+
+    printf("Total Nodes: %d\n\n", totalNodes(T));
+
+    printf("Total internal Nodes: %d\n\n", totalInternalNodes(T));
+
+    printf("Total external Nodes: %d\n\n", totalExternalNodes(T));
+
+    printf("Mirror: ");
+    T = mirror(T);
+    inOrder(T);
+    printf("\n\n");
+
+    // deleteing all elements
+    T = deleteBST(T);
+    inOrder(T);
+    printf("\n\n");
 }
