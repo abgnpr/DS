@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+static inline int max(int a, int b) { return a > b ? a : b; }
+
 typedef struct Node {
     int data;
     struct Node *left, *right;
@@ -39,6 +41,9 @@ BST* mirror(BST* T)
 
 Node* smallest(BST* T)
 {
+    if (T == NULL)
+        printf("Tree empty\n");
+
     Node* node = T;
     while (node->left)
         node = node->left;
@@ -47,10 +52,63 @@ Node* smallest(BST* T)
 
 Node* biggest(BST* T)
 {
+    if (T == NULL)
+        printf("Tree empty\n");
+
     Node* node = T;
     while (node->right)
         node = node->right;
     return node;
+}
+
+Node* successor(BST* T, Node* node)
+{
+    if (node->right)
+        return smallest(node->right);
+
+    Node* cur = T;
+    while (cur) {
+        if (node->data < cur->data) {
+            if (node->data == cur->left->data)
+                break;
+            cur = cur->left;
+
+        } else {
+            if (node->data == cur->right->data)
+                break;
+            cur = cur->right;
+        }
+    }
+
+    return cur;
+}
+
+Node* predecessor(BST* T, Node* node)
+{
+    if (node->left)
+        return biggest(node->left);
+
+    Node* cur = T;
+    while (cur) {
+        if (node->data < cur->data) {
+            if (node->data == cur->left->data)
+                return cur;
+            cur = cur->left;
+
+        } else {
+            if (node->data == cur->right->data)
+                return cur;
+            cur = cur->right;
+        }
+    }
+}
+
+Node* find(BST* T, int data)
+{
+    Node* cur = T;
+    while (cur != NULL && data != cur->data)
+        cur = (data < cur->data) ? cur->left : cur->right;
+    return cur;
 }
 
 BST* insert(BST* T, int data)
@@ -153,7 +211,6 @@ BST* del(BST* T, int data)
     return T;
 }
 
-static inline int max(int a, int b) { return a > b ? a : b; }
 int height(BST* T)
 {
     if (T == NULL)
@@ -238,8 +295,18 @@ void main(void)
     postOrder(T);
     printf("\n\n");
 
+    printf("find(4): ");
+    find(T, 4) ? printf("found!\n\n") : printf("not found\n\n");
+
+    printf("find(11): ");
+    find(T, 11) ? printf("found!\n\n") : printf("not found\n\n");
+
     printf("Biggest: %d\n\n", biggest(T)->data);
     printf("Smallest: %d\n\n", smallest(T)->data);
+
+    Node *node3 = find(T, 5), *node9 = find(T, 1);
+    printf("Successor(3): %d\n\n", successor(T, node3)->data);
+    printf("Predecessor(9): %d\n\n", predecessor(T, node9)->data);
 
     // delete some elements
     for (int i = 1; i <= 10; i += 2) {
@@ -262,7 +329,7 @@ void main(void)
     inOrder(T);
     printf("\n\n");
 
-    // deleteing all elements
+    // delete all elements
     T = deleteBST(T);
     inOrder(T);
     printf("\n\n");
