@@ -31,4 +31,4 @@
 
 ### Trees
 
-*   Working on it
+*   Binary Search Tree
