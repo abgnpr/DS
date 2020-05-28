@@ -1,10 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define BALANCED 0
-#define LEFT_HEAVY 1
-#define RIGHT_HEAVY -1
-
 typedef struct Node {
     int data, height;
     struct Node *left, *right, *parent;
@@ -18,14 +14,17 @@ Node* createNewNode(int data)
     n->height = 0;
 }
 
-int height(AVLTree *T) {
-    return (T == NULL)? 0: T->height;
+int max(int a, int b) { return a > b ? a : b; }
+
+int height(AVLTree* T)
+{
+    return (T) ? T->height : -1;
 }
 
 void updateHeight(Node* n)
 {
-    if (n) 
-        n->height = max(height(n->left), height(n->right));
+    if (n)
+        n->height = 1 + max(height(n->left), height(n->right));
 }
 
 int balanceFactor(AVLTree* T)
@@ -41,13 +40,91 @@ Node* find(AVLTree* T, int data)
     return cur;
 }
 
+AVLTree* rotateLL(AVLTree* T)
+{
+    Node* TP;
+    AVLTree *TL, *TLR;
+
+    TP = T->parent;
+    TL = T->left;
+    TLR = TL->right;
+
+    if (TP) {
+        if (T == TP->left)
+            TP->left = TL;
+        else
+            TP->right = TL;
+    }
+    TL->parent = TP;
+
+    TL->right = T;
+    T->parent = TL;
+
+    T->left = TLR;
+    if (TLR)
+        TLR->parent = T;
+
+    updateHeight(TLR);
+    updateHeight(T);
+    updateHeight(TL);
+    updateHeight(TP);
+
+    return TL;
+}
+
+AVLTree* rotateRR(AVLTree* T)
+{
+    Node* TP;
+    AVLTree *TR, *TRL;
+
+    TP = T->parent;
+    TR = T->right;
+    TRL = TR->left;
+
+    if (TP) {
+        if (T == TP->left)
+            TP->left = TR;
+        else
+            TP->right = TR;
+    }
+    TR->parent = TP;
+
+    TR->left = T;
+    T->parent = TR;
+
+    T->right = TRL;
+    if (TRL)
+        TRL->parent = T;
+
+    updateHeight(TRL);
+    updateHeight(T);
+    updateHeight(TR);
+    updateHeight(TP);
+
+    return TR;
+}
+
+AVLTree* rotateLR(AVLTree* T)
+{
+    T->left = rotateRR(T->left);
+    T = rotateLL(T);
+    return T;
+}
+
+AVLTree* rotateRL(AVLTree* T)
+{
+    T->right = rotateLL(T->right);
+    T = rotateRR(T);
+    return T;
+}
+
 AVLTree* insert(AVLTree* T, int data)
 {
     if (T == NULL)
         T = createNewNode(data);
 
     else {
-        
+
         Node *cur = T, *par = NULL;
         while (cur) {
             par = cur;
@@ -65,35 +142,40 @@ AVLTree* insert(AVLTree* T, int data)
 
         // climb upwards to look for critical nodes
         cur = par->parent;
-        Node *child = par;
-        Node *childOfChild = newNode;
-        
+        Node* child = par;
+        Node* childOfChild = newNode;
+
         while (cur) {
+
+            updateHeight(cur);
             // calculate the balance factor of current
             int bf = balanceFactor(cur);
-            
+
             // if current is a critical node
             if (bf > 1 || bf < -1) {
-                // determine the type of rotation needed 
+                // determine the type of rotation needed
                 // to rebalance and then rotate
-                if (childOfChild == cur->left->left) {
-                    // LL
-                    
-                } else if (childOfChild == cur->right->right) {
-                    // RR
-                } else if (childOfChild == cur->left->right) {
-                    // LR
-                } else if (childOfChild == cur->right->left) {
-                    // RL
+                if (cur->left && childOfChild == cur->left->left) {
+                    cur = rotateLL(cur);
+
+                } else if (cur->right && childOfChild == cur->right->right) {
+                    cur = rotateRR(cur);
+
+                } else if (cur->left && childOfChild == cur->left->right) {
+                    cur = rotateLR(cur);
+
+                } else if (cur->right && childOfChild == cur->right->left) {
+                    cur = rotateRL(cur);
                 }
             }
-            
+
             // move up
             childOfChild = child;
             child = cur;
             cur = cur->parent;
-            
         }
+
+        T = child;
     }
 
     return T;
@@ -110,4 +192,7 @@ void inOrder(AVLTree* T)
     }
 }
 
-void main(void) {}
+void main(void)
+{
+    printf("\n");
+}
