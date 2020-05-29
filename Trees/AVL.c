@@ -2,7 +2,6 @@
 
 // Note: Doesn't support duplicate nodes
 
-#include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -133,7 +132,7 @@ AVLTree* rotateRL(AVLTree* T)
 }
 
 // Performs bottom to top height updates and balancing
-// Traces the path from `cur` to root and returns the roots
+// Traces the path from `cur` to root and returns the root
 AVLTree* balanceAndUpdate(Node* cur)
 {
     AVLTree* T;
@@ -200,7 +199,7 @@ AVLTree* insert(AVLTree* T, int data)
     return T;
 }
 
-// Returns the biggest date element in tree T
+// Returns the node with biggest `data` in tree T
 Node* biggest(AVLTree* T)
 {
     if (T == NULL)
@@ -285,7 +284,8 @@ AVLTree* del(AVLTree* T, int data)
     return T;
 }
 
-// Traverses the tree T in order and prints each element
+// Traverses the tree T in order and prints each node
+// in ascending order
 void inOrder(AVLTree* T)
 {
     if (T) {
