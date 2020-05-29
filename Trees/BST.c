@@ -1,3 +1,9 @@
+// Binary Search Tree
+
+// Note:
+// * Implemented with nodes without parent pointer
+// * Doesn't support duplicate nodes
+
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -16,8 +22,10 @@ Node* createNewNode(int data)
     return n;
 }
 
+// returns a new empty tree
 BST* createBST() { return NULL; }
 
+// deletes all nodes of a BST, returns an empty tree
 BST* deleteBST(BST* T)
 {
     if (T) {
@@ -28,7 +36,8 @@ BST* deleteBST(BST* T)
     return NULL;
 }
 
-BST* mirror(BST* T)
+// mirrors the tree T
+void mirror(BST* T)
 {
     if (T) {
         mirror(T->left);
@@ -39,6 +48,7 @@ BST* mirror(BST* T)
     }
 }
 
+// Returns the node with smallest `data` in tree T
 Node* smallest(BST* T)
 {
     if (T == NULL)
@@ -50,6 +60,7 @@ Node* smallest(BST* T)
     return node;
 }
 
+// Returns the node with biggest `data` in tree T
 Node* biggest(BST* T)
 {
     if (T == NULL)
@@ -61,48 +72,7 @@ Node* biggest(BST* T)
     return node;
 }
 
-Node* successor(BST* T, Node* node)
-{
-    if (node->right)
-        return smallest(node->right);
-
-    Node* cur = T;
-    while (cur) {
-        if (node->data < cur->data) {
-            if (node->data == cur->left->data)
-                break;
-            cur = cur->left;
-
-        } else {
-            if (node->data == cur->right->data)
-                break;
-            cur = cur->right;
-        }
-    }
-
-    return cur;
-}
-
-Node* predecessor(BST* T, Node* node)
-{
-    if (node->left)
-        return biggest(node->left);
-
-    Node* cur = T;
-    while (cur) {
-        if (node->data < cur->data) {
-            if (node->data == cur->left->data)
-                return cur;
-            cur = cur->left;
-
-        } else {
-            if (node->data == cur->right->data)
-                return cur;
-            cur = cur->right;
-        }
-    }
-}
-
+// Finds and returns the node cntaining `data` in tree T
 Node* find(BST* T, int data)
 {
     Node* cur = T;
@@ -111,6 +81,7 @@ Node* find(BST* T, int data)
     return cur;
 }
 
+// Inserts a new node with `data` in tree T
 BST* insert(BST* T, int data)
 {
     // if the tree is empty (root is NULL)
@@ -124,12 +95,12 @@ BST* insert(BST* T, int data)
         // has no parents, its parent is NULL
         Node *cur = T, *par = NULL;
 
-        // traverse down comparing current data with
-        // new data to find the correct parent to
-        // hang the new node
+        // In order to find the appropriate node to
+        // hang the new node, traverse down comparing
+        // new data with current data.
         while (cur != NULL) {
             // current node will be the parent
-            // of the next child downstream
+            // of the next node downstream
             par = cur;
 
             // if the new data is less than current
@@ -150,60 +121,96 @@ BST* insert(BST* T, int data)
             par->right = createNewNode(data);
     }
 
+    // return the root
     return T;
 }
 
+// Removes the element containing `data` from tree T
+// Returns the root of the main tree
 BST* del(BST* T, int data)
 {
+    // report if the tree is empty
     if (T == NULL)
         printf("Tree Empty\n");
 
     else {
 
-        Node *cur = T, *par = NULL;
-        while (cur != NULL && cur->data != data) {
-            par = cur;
-            cur = (data < cur->data) ? cur->left : cur->right;
+        // find the node to be deleted - `node`
+        // and its parent - `par`
+        Node *node = T, *par = NULL;
+        while (node != NULL && node->data != data) {
+            par = node;
+            node = (data < node->data) ? node->left : node->right;
         }
 
-        if (cur) {
+        // a node matching with given `data` is found
+        if (node) {
 
-            if (cur->left && cur->right) {
+            // the node has both children
+            if (node->left && node->right) {
+                // replace its data with the data
+                // of the next in-order successor 
                 Node* s = smallest(T->right);
-                cur->data = s->data;
+                node->data = s->data;
+                // recursively delete the in-order
+                // successor
                 T->right = del(T->right, s->data);
 
-            } else if (cur->left) {
+            // the node has only left child
+            } else if (node->left) {
+                // node has no parent, i.e. it's the root
                 if (par == NULL)
-                    T = cur->left;
-                else if (cur == par->left)
-                    par->left = cur->left;
-                else
-                    par->right = cur->left;
+                    // left child becomes the new root
+                    T = node->left;
 
-                free(cur);
+                else {
+                    // attach the left child to the appropriate
+                    // branch of node's parent
+                    if (node == par->left)
+                        par->left = node->left;
+                    else
+                        par->right = node->left;
+                }
 
-            } else if (cur->right) {
+                free(node); // delete the node
+
+            // the node has only right child
+            } else if (node->right) {
+                // node has no parent, i.e. it's the root
                 if (par == NULL)
-                    T = cur->right;
-                else if (cur == par->left)
-                    par->left = cur->right;
-                else
-                    par->right = cur->right;
+                    // right child becomes the new root
+                    T = node->right;
 
-                free(cur);
+                else {
+                    // attach the right child to the appropriate
+                    // branch of node's parent
+                    if (node == par->left)
+                        par->left = node->right;
+                    else
+                        par->right = node->right;
+                }
 
+                free(node); // delete the node
+
+            // node is a leaf
             } else {
+                // node has no parent, i.e. it's the root
                 if (par == NULL)
+                    // tre becomes empty
                     T = NULL;
-                else if (cur == par->left)
-                    par->left = NULL;
-                else
-                    par->right = NULL;
 
-                free(cur);
+                else {
+                    // nellify the appropriate parent branch
+                    if (node == par->left)
+                        par->left = NULL;
+                    else
+                        par->right = NULL;
+                }
+
+                free(node); // delete the node
             }
 
+        // otherwise report that a node matching given data wasn't found
         } else
             printf("%d not found\n", data);
     }
@@ -211,6 +218,7 @@ BST* del(BST* T, int data)
     return T;
 }
 
+// Returns the height of tree T
 int height(BST* T)
 {
     if (T == NULL)
@@ -219,6 +227,7 @@ int height(BST* T)
     return 1 + max(height(T->left), height(T->right));
 }
 
+// Returns total number of nodes in tree T
 int totalNodes(BST* T)
 {
     if (T == NULL)
@@ -227,6 +236,7 @@ int totalNodes(BST* T)
     return 1 + totalNodes(T->left) + totalNodes(T->right);
 }
 
+// Returns total number of nodes excluding leaf nodes
 int totalInternalNodes(BST* T)
 {
     if (T == NULL || (T->left == NULL && T->right == NULL))
@@ -235,6 +245,7 @@ int totalInternalNodes(BST* T)
     return 1 + totalInternalNodes(T->left) + totalInternalNodes(T->right);
 }
 
+// Returns total number of leaf nodes
 int totalExternalNodes(BST* T)
 {
     if (T == NULL)
@@ -246,6 +257,8 @@ int totalExternalNodes(BST* T)
     return totalExternalNodes(T->left) + totalExternalNodes(T->right);
 }
 
+// Traverses the tree T in order and prints each node
+// before its left and right children have been printed
 void preOrder(BST* T)
 {
     if (T) {
@@ -255,6 +268,8 @@ void preOrder(BST* T)
     }
 }
 
+// Traverses the tree T in order and prints each node
+// in ascending order
 void inOrder(BST* T)
 {
     if (T) {
@@ -264,6 +279,8 @@ void inOrder(BST* T)
     }
 }
 
+// Traverses the tree T post order and prints each node 
+// after its left and right children have been printed
 void postOrder(BST* T)
 {
     if (T) {
@@ -273,6 +290,7 @@ void postOrder(BST* T)
     }
 }
 
+// driver
 void main(void)
 {
     BST* T = createBST();
@@ -305,8 +323,8 @@ void main(void)
     printf("Smallest: %d\n\n", smallest(T)->data);
 
     Node *node3 = find(T, 5), *node9 = find(T, 1);
-    printf("Successor(3): %d\n\n", successor(T, node3)->data);
-    printf("Predecessor(9): %d\n\n", predecessor(T, node9)->data);
+    // printf("Successor(3): %d\n\n", successor(T, node3)->data);
+    // printf("Predecessor(9): %d\n\n", predecessor(T, node9)->data);
 
     // delete some elements
     for (int i = 1; i <= 10; i += 2) {
@@ -324,9 +342,11 @@ void main(void)
 
     printf("Total external Nodes: %d\n\n", totalExternalNodes(T));
 
-    printf("Mirror: ");
-    T = mirror(T);
-    inOrder(T);
+    printf("Original: ");
+    preOrder(T);
+    printf("\nMirror: ");
+    mirror(T);
+    preOrder(T);
     printf("\n\n");
 
     // delete all elements
