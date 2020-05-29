@@ -1,3 +1,8 @@
+// AVL Tree
+
+// Note: Doesn't support duplicate nodes
+
+#include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -14,24 +19,29 @@ Node* createNewNode(int data)
     n->height = 0;
 }
 
+// Returns the greater among a and b
 int max(int a, int b) { return a > b ? a : b; }
 
+// Returns the height of the root of tree T
 int height(AVLTree* T)
 {
     return (T) ? T->height : -1;
 }
 
+// Updates the height of a node `n`
 void updateHeight(Node* n)
 {
     if (n)
         n->height = 1 + max(height(n->left), height(n->right));
 }
 
-int balanceFactor(AVLTree* T)
+// Returns the balance factor at a node `n`
+int balanceFactor(Node* n)
 {
-    return height(T->left) - height(T->right);
+    return height(n->left) - height(n->right);
 }
 
+// Finds and returns the node containing `data` in tree T
 Node* find(AVLTree* T, int data)
 {
     Node* cur = T;
@@ -40,6 +50,7 @@ Node* find(AVLTree* T, int data)
     return cur;
 }
 
+// rotate right
 AVLTree* rotateLL(AVLTree* T)
 {
     Node* TP;
@@ -72,6 +83,7 @@ AVLTree* rotateLL(AVLTree* T)
     return TL;
 }
 
+// rotate left
 AVLTree* rotateRR(AVLTree* T)
 {
     Node* TP;
@@ -104,6 +116,7 @@ AVLTree* rotateRR(AVLTree* T)
     return TR;
 }
 
+// idk
 AVLTree* rotateLR(AVLTree* T)
 {
     T->left = rotateRR(T->left);
@@ -111,6 +124,7 @@ AVLTree* rotateLR(AVLTree* T)
     return T;
 }
 
+// idk
 AVLTree* rotateRL(AVLTree* T)
 {
     T->right = rotateLL(T->right);
@@ -118,6 +132,48 @@ AVLTree* rotateRL(AVLTree* T)
     return T;
 }
 
+// Performs bottom to top height updates and balancing
+// Traces the path from `cur` to root and returns the roots
+AVLTree* balanceAndUpdate(Node* cur)
+{
+    AVLTree* T;
+
+    if (cur == NULL) {
+        printf("Invalid start point");
+        T = NULL;
+    }
+
+    while (cur) {
+
+        updateHeight(cur);
+        int bf = balanceFactor(cur);
+
+        if (bf > 1) {
+            // left left case
+            if (balanceFactor(cur->left) >= 0)
+                cur = rotateLL(cur);
+            // left right case
+            else // < 0
+                cur = rotateLR(cur);
+        }
+
+        else if (bf < -1) {
+            // right right case
+            if (balanceFactor(cur->right) <= 0)
+                cur = rotateRR(cur);
+            // right left case
+            else // > 0
+                cur = rotateRL(cur);
+        }
+
+        T = cur;
+        cur = cur->parent;
+    }
+
+    return T;
+}
+
+// Inserts a new node with `data` in tree T
 AVLTree* insert(AVLTree* T, int data)
 {
     if (T == NULL)
@@ -138,51 +194,98 @@ AVLTree* insert(AVLTree* T, int data)
         else
             par->right = newNode;
 
-        updateHeight(par);
-
-        // climb upwards to look for critical nodes
-        cur = par->parent;
-        Node* child = par;
-        Node* childOfChild = newNode;
-
-        while (cur) {
-
-            updateHeight(cur);
-            // calculate the balance factor of current
-            int bf = balanceFactor(cur);
-
-            // if current is a critical node
-            if (bf > 1 || bf < -1) {
-                // determine the type of rotation needed
-                // to rebalance and then rotate
-                if (cur->left && childOfChild == cur->left->left) {
-                    cur = rotateLL(cur);
-
-                } else if (cur->right && childOfChild == cur->right->right) {
-                    cur = rotateRR(cur);
-
-                } else if (cur->left && childOfChild == cur->left->right) {
-                    cur = rotateLR(cur);
-
-                } else if (cur->right && childOfChild == cur->right->left) {
-                    cur = rotateRL(cur);
-                }
-            }
-
-            // move up
-            childOfChild = child;
-            child = cur;
-            cur = cur->parent;
-        }
-
-        T = child;
+        T = balanceAndUpdate(par);
     }
 
     return T;
 }
 
-AVLTree* del(AVLTree* T) {}
+// Returns the biggest date element in tree T
+Node* biggest(AVLTree* T)
+{
+    if (T == NULL)
+        printf("Tree empty\n");
 
+    Node* node = T;
+    while (node->right)
+        node = node->right;
+    return node;
+}
+
+// Removes the element containing `data` from tree T
+// Returns the root of the main tree
+AVLTree* del(AVLTree* T, int data)
+{
+    if (T == NULL)
+        printf("Tree Empty\n");
+
+    else {
+        Node* cur = find(T, data);
+        if (cur) {
+
+            Node* par = cur->parent;
+
+            if (cur->right && cur->left) {
+                Node* b = biggest(cur->left);
+                cur->data = b->data;
+                T = del(cur->left, b->data);
+
+            } else if (cur->left) {
+                cur->left->parent = par;
+                if (par == NULL)
+                    T = cur->left;
+
+                else {
+                    if (cur == par->left)
+                        par->left = cur->left;
+                    else
+                        par->right = cur->left;
+
+                    T = balanceAndUpdate(par);
+                }
+
+                free(cur);
+
+            } else if (cur->right) {
+                cur->right->parent = par;
+                if (par == NULL)
+                    T = cur->right;
+
+                else {
+                    if (cur == par->left)
+                        par->left = cur->right;
+                    else
+                        par->right = cur->right;
+
+                    T = balanceAndUpdate(par);
+                }
+
+                free(cur);
+
+            } else {
+                if (par == NULL)
+                    T = NULL;
+
+                else {
+                    if (cur == par->left)
+                        par->left = NULL;
+                    else
+                        par->right = NULL;
+
+                    T = balanceAndUpdate(par);
+                }
+
+                free(cur);
+            }
+
+        } else
+            printf("%d not found\n", data);
+    }
+
+    return T;
+}
+
+// Traverses the tree T in order and prints each element
 void inOrder(AVLTree* T)
 {
     if (T) {
@@ -192,7 +295,27 @@ void inOrder(AVLTree* T)
     }
 }
 
+// driver
 void main(void)
 {
+    AVLTree* T = NULL;
+
+    printf("\n");
+
+    printf("Insertion started\n");
+    for (int i = 1; i <= 10000000; i += 1) {
+        T = insert(T, i);
+    }
+    printf("Insertion complete\n");
+
+    printf("\n");
+    printf("\n");
+
+    printf("Deletion started\n");
+    for (int i = 10000000; i >= 1; i -= 1) {
+        T = del(T, i);
+    }
+    printf("Deletion complete\n");
+
     printf("\n");
 }
