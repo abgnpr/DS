@@ -20,7 +20,8 @@
 
 ### Queues
 
-*   to be revised
+*   Queue using array
+*   Queue using linked list
 
 
 ### Recursion
@@ -32,3 +33,4 @@
 ### Trees
 
 *   Binary Search Tree
+*   AVL Tree
