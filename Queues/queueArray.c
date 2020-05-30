@@ -30,7 +30,7 @@ int queueEmpty(Queue* Q) { return (size(Q) == 0) ? TRUE : FALSE; }
 
 int queueFull(Queue* Q) { return (size(Q) == Q->max) ? TRUE : FALSE; }
 
-void rebase(Queue* Q)
+void shiftToArrayStart(Queue* Q)
 {
     if (queueEmpty(Q)) {
         Q->head = 0;
@@ -54,7 +54,7 @@ void enqueue(Queue* Q, int data)
 
     else {
         if (Q->tail == Q->max - 1)
-            rebase(Q);
+            shiftToArrayStart(Q);
 
         Q->arr[++Q->tail] = data;
     }
