@@ -1,3 +1,5 @@
+// QUEUE : array implementation
+
 #include <inttypes.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -6,47 +8,36 @@
 #define TRUE 1
 #define FALSE 0
 
-int maxIntDigits()
-{
-    int nDigits = 0;
-    int maxInt = INT32_MAX;
-    while ((maxInt /= 10) > 0)
-        nDigits++;
-    return nDigits;
-}
-
-struct Queue {
+typedef struct Queue {
     int head, tail;
     int size;
     // Flexible Array Member (must be the last member)
     int arr[];
-};
+} Queue;
 
-struct Queue*
-createQueue(int size)
+Queue* createQueue(int size)
 {
-    struct Queue* Q;
-    Q = malloc(sizeof(*Q) + sizeof(int) * size);
+    Queue* Q = malloc(sizeof(Queue) + sizeof(int) * size);
     Q->head = Q->tail = 0;
     Q->size = size;
     return Q;
 }
 
-int queueEmpty(const struct Queue* Q)
+int queueEmpty(Queue* Q)
 {
     if (Q->head == Q->tail)
         return TRUE;
     return FALSE;
 }
 
-void moveForward(struct Queue* Q)
+void moveForward(Queue* Q)
 {
     for (int i = Q->head; i < Q->tail; ++i)
         Q->arr[i] = Q->arr[i + 1];
     Q->tail--;
 }
 
-void enqueue(struct Queue* Q, int data)
+void enqueue(Queue* Q, int data)
 {
     if (Q->tail < Q->size)
         Q->arr[Q->tail++] = data;
@@ -54,7 +45,7 @@ void enqueue(struct Queue* Q, int data)
         printf("\033[31mOverflow\033[0m");
 }
 
-void dequeue(struct Queue* Q)
+void dequeue(Queue* Q)
 {
     if (Q->head < Q->tail) {
         int dequeued = Q->arr[Q->head];
@@ -64,7 +55,7 @@ void dequeue(struct Queue* Q)
         printf("\033[31mUnderflow\033[0m");
 }
 
-void print(const struct Queue* Q)
+void print(Queue* Q)
 {
     printf("\n\033[33mhead{\033[0m");
     for (int i = Q->head; i < Q->tail; ++i) {
@@ -75,10 +66,18 @@ void print(const struct Queue* Q)
     printf("\033[33m}tail\033[0m\n");
 }
 
+int maxIntDigits()
+{
+    int nDigits = 0;
+    int maxInt = INT32_MAX;
+    while ((maxInt /= 10) > 0)
+        nDigits++;
+    return nDigits;
+}
+
+// driver
 int main(void)
 {
-    system("clear");
-
     int size;
     printf("\nQueue size: ");
     scanf("%d", &size);
@@ -86,7 +85,7 @@ int main(void)
     // instructions
     printf("\nInput gets enqueued, enter d to dequeue, q to quit\n");
 
-    struct Queue* q = createQueue(size);
+    Queue* q = createQueue(size);
 
     int maxInputSize = maxIntDigits();
     char input[maxInputSize + 1 /*for null*/];
@@ -97,16 +96,24 @@ int main(void)
         printf("\nQueue> ");
         scanf("%s", input);
 
+        // `q` to quit
         if (strcmp(input, "q") == 0) {
             done = TRUE; // exit
 
         } else if (strlen(input) <= maxInputSize) {
 
+            // `d` to deque
             if (strcmp(input, "d") == 0)
                 dequeue(q);
 
-            else {
+            else {  // otherwise, enqueue the integer input
+                
+                // covert string input to integer
                 int data = strtoimax(input, NULL, 10);
+                
+                // strtoimax() returns 0 for junk values
+                // so, 0 should be pushed only if input
+                // is actually 0
                 if (data != 0 || strncmp(input, "0", 1) == 0)
                     enqueue(q, data);
             }
