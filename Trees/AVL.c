@@ -22,19 +22,12 @@ Node* createNewNode(int data)
 int max(int a, int b) { return a > b ? a : b; }
 
 // Returns the height of the root of tree T
-int height(AVLTree* T)
-{
-    return (T) ? T->height : -1;
-}
+int height(AVLTree* T) { return (T) ? T->height : -1; }
 
-// Updates the height of a node `n`
-void updateHeight(Node* n)
-{
-    if (n)
-        n->height = 1 + max(height(n->left), height(n->right));
-}
+// Updates the height of node `n`
+void updateHeight(Node* n) { if (n) n->height = 1 + max(height(n->left), height(n->right)); }
 
-// Returns the balance factor at a node `n`
+// Returns the balance factor at node `n`
 int balanceFactor(Node* n)
 {
     return height(n->left) - height(n->right);
