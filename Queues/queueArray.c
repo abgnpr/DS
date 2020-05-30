@@ -90,7 +90,7 @@ void peekBack(Queue* Q)
 void print(Queue* Q)
 {
     if (queueEmpty(Q))
-        printf("\n(empty)\n");
+        printf("\nQueue empty\n");
 
     else {
         printf("\n\033[33mhead{\033[0m");
