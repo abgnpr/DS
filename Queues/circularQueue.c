@@ -44,7 +44,9 @@ void enqueue(Queue* Q, int data)
 
     else {
         if (Q->tail == Q->max - 1)
-            Q->tail = -1;
+            Q->tail = 0;
+        else
+            Q->tail += 1;
 
         Q->arr[++Q->tail] = data;
     }
