@@ -48,7 +48,7 @@ void enqueue(Queue* Q, int data)
         else
             Q->tail += 1;
 
-        Q->arr[++Q->tail] = data;
+        Q->arr[Q->tail] = data;
     }
 }
 
