@@ -15,60 +15,81 @@ typedef struct Queue {
     Element *head, *tail;
 } Queue;
 
+// creates a new queue
 Queue* createQueue() { return (Queue*)malloc(sizeof(Queue)); }
 
+// returns the size of the queue
+int size(Queue* Q)
+{
+    int s = 0;
+    for (Element* e = Q->head; e != NULL; e = e->next)
+        s++;
+    return s;
+}
+
+// returns true if the queue is empty
 int queueEmpty(Queue* Q) { return (Q->head == NULL) ? TRUE : FALSE; }
 
+// adds a data element to the queue end
 void enqueue(Queue* Q, int data)
 {
+    // create a new element with `data`
     Element* newElement = (Element*)malloc(sizeof(Element));
     newElement->data = data;
     newElement->next = NULL;
 
     if (queueEmpty(Q))
+        // new element becomes the new head
         Q->head = newElement;
     else
+        // new element is attached next to the tail
         Q->tail->next = newElement;
 
+    // and the new element becomes the new tail
     Q->tail = newElement;
 }
 
+// removes a data element from the queue front
 void dequeue(Queue* Q)
 {
     if (queueEmpty(Q))
-        printf("\033[31mUnderflow\033[0m");
+        printf("\n\033[31mUnderflow\033[0m\n");
 
     else {
+        // print the dequed element
         Element* dequeued = Q->head;
+        printf("\nDequeued: %d\n", dequeued->data);
+
+        // next of head becomes the head
         Q->head = Q->head->next;
 
-        // printed instead of returned
-        printf("\nDequeued: %d\n", dequeued->data);
-        
         free(dequeued);
     }
 }
 
+// shows the element at the queue front
 void peekFront(Queue* Q)
 {
     if (queueEmpty(Q))
         printf("\nQueue Empty\n");
 
     else
-        // printed instead of returned
+        // print instead of return
         printf("\nFront(HEAD): %d\n", Q->head->data);
 }
 
+// shows the element at the queue end
 void peekBack(Queue* Q)
 {
     if (queueEmpty(Q))
         printf("\nQueue Empty\n");
 
     else
-        // printed instead of returned
+        // print instead of return
         printf("\nBack(TAIL): %d\n", Q->tail->data);
 }
 
+// prints the queue
 void print(Queue* Q)
 {
     if (queueEmpty(Q))
