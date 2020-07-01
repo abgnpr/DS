@@ -15,6 +15,7 @@ typedef struct Queue {
     int arr[];
 } Queue;
 
+// creates a new queue of size 'max
 Queue* createQueue(int max)
 {
     Queue* Q = malloc(sizeof(Queue) + sizeof(int) * max);
@@ -24,12 +25,16 @@ Queue* createQueue(int max)
     return Q;
 }
 
+// returns the size of the queue
 int size(Queue* Q) { return Q->tail - Q->head + 1; }
 
+// returns true if the queue is empty
 int queueEmpty(Queue* Q) { return (size(Q) == 0) ? TRUE : FALSE; }
 
+// returns true if the queue if full
 int queueFull(Queue* Q) { return (size(Q) == Q->max) ? TRUE : FALSE; }
 
+// shifts queue elements to the beginning of the array (pos: 0)
 void shiftToArrayStart(Queue* Q)
 {
     if (queueEmpty(Q)) {
@@ -38,21 +43,26 @@ void shiftToArrayStart(Queue* Q)
     }
 
     else {
+        // shift elements
         int i = 0, k = Q->head;
         while (k <= Q->tail)
             Q->arr[i++] = Q->arr[k++];
 
+        // reposition head & tail
         Q->head = 0;
         Q->tail = i - 1;
     }
 }
 
+// adds a data element to the queue end
 void enqueue(Queue* Q, int data)
 {
     if (queueFull(Q))
-        printf("\033[31mOverflow\033[0m");
+        printf("\n\033[31mOverflow\033[0m\n");
 
     else {
+        // shift the array to start when the queue is unsaturated
+        // but the tail pointer has reached the end of the array
         if (Q->tail == Q->max - 1)
             shiftToArrayStart(Q);
 
@@ -60,15 +70,17 @@ void enqueue(Queue* Q, int data)
     }
 }
 
+// removes a data element from the queue front
 void dequeue(Queue* Q)
 {
     if (queueEmpty(Q))
-        printf("\033[31mUnderflow\033[0m");
+        printf("\n\033[31mUnderflow\033[0m\n");
     else
-        // printed instead of returned
+        // print instead of return
         printf("\nDequeued: %d\n", Q->arr[Q->head++]);
 }
 
+// shows the element at the queue front
 void peekFront(Queue* Q)
 {
     if (queueEmpty(Q))
@@ -78,6 +90,7 @@ void peekFront(Queue* Q)
         printf("\nFront(HEAD): %d\n", Q->arr[Q->head]);
 }
 
+// shows the element at the queue end
 void peekBack(Queue* Q)
 {
     if (queueEmpty(Q))
@@ -87,6 +100,7 @@ void peekBack(Queue* Q)
         printf("\nBack(TAIL): %d\n", Q->arr[Q->tail]);
 }
 
+// prints the queue
 void print(Queue* Q)
 {
     if (queueEmpty(Q))
@@ -120,7 +134,7 @@ void main(void)
     scanf("%d", &size);
 
     // instructions
-    printf("\nInput gets enqueued, enter d to dequeue, pf to peek front, pb to peek back q to quit\n");
+    printf("\nInput gets enqueued\nd  - dequeue\npf - peek front\npb - peek back\nq  - quit\n");
 
     Queue* q = createQueue(size);
 
