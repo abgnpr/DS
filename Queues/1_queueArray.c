@@ -76,7 +76,7 @@ void dequeue(Queue* Q)
     if (queueEmpty(Q))
         printf("\n\033[31mUnderflow\033[0m\n");
     else
-        // print instead of return
+        // print the dequed element
         printf("\nDequeued: %d\n", Q->arr[Q->head++]);
 }
 
@@ -86,7 +86,7 @@ void peekFront(Queue* Q)
     if (queueEmpty(Q))
         printf("\nQueue Empty\n");
     else
-        // printed instead of returned
+        // print instead of return
         printf("\nFront(HEAD): %d\n", Q->arr[Q->head]);
 }
 
@@ -96,7 +96,7 @@ void peekBack(Queue* Q)
     if (queueEmpty(Q))
         printf("\nQueue Empty\n");
     else
-        // printed instead of returned
+        // print instead of return
         printf("\nBack(TAIL): %d\n", Q->arr[Q->tail]);
 }
 
