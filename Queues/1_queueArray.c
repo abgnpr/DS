@@ -15,7 +15,7 @@ typedef struct Queue {
     int arr[];
 } Queue;
 
-// creates a new queue of size 'max
+// creates a new queue of size 'max'
 Queue* createQueue(int max)
 {
     Queue* Q = malloc(sizeof(Queue) + sizeof(int) * max);
