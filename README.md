@@ -1,7 +1,7 @@
 # Data Structures
 
 
-### Linked List
+### Linked Lists
 
 *   Singly Linked List
 *   Doubly Linked List
@@ -22,7 +22,7 @@
 
 *   Queue using array
 *   Queue using linked list
-
+*   Circular Queue
 
 ### Recursion
 
