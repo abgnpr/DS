@@ -28,16 +28,19 @@ Queue* createQueue(int max)
 // returns the size of the queue
 int size(Queue* Q)
 {
-    // queue has 0 elements when head
-    // and tail are at initial position
+    // queue has 0 elements when head and
+    // tail are both at initial position
     if (Q->tail == -1 && Q->head == 0)
         return 0;
 
-    // number of elements from head to tail
-    int diff = Q->tail - Q->head + 1;
-    // result +ve (head is on the left of tail), it is the size
-    // result -ve (tail is on the left of head), size is max - |result| = max + result
-    return (Q->tail >= Q->head) ? diff : Q->max + diff;
+    // calculate the number of elements from head to tail
+    int res = Q->tail - Q->head + 1;
+
+    // result +ve (i.e. head is on the left of tail),
+    //      size = result
+    // result -ve (i.e. tail is on the left of head),
+    // 		size = max - |result| = max + result
+    return (Q->tail >= Q->head) ? res : Q->max + res;
 }
 
 // returns true if the queue is empty
@@ -53,13 +56,8 @@ void enqueue(Queue* Q, int data)
         printf("\033[31mOverflow\033[0m");
 
     else {
-        // reset the tail to pos:0 using % when
-        // it reaches the end of the array;
-        // otherwise just increment it by 1
+        // circular increment of tail
         Q->tail = (Q->tail + 1) % Q->max;
-
-        // alternate
-        // Q->tail = (Q->tail == Q->max - 1)? 0 : Q->tail + 1;
 
         Q->arr[Q->tail] = data;
     }
@@ -77,15 +75,13 @@ void dequeue(Queue* Q)
 
         // coincidence of head and tail implies
         // that the queue has become empty, so
-        // we reset both head and tail.
+        // we reset both of them
         if (Q->head == Q->tail) {
             Q->head = 0;
             Q->tail = -1;
 
         } else
-            // reset the head to pos:0 using % when
-            // it reaches the end of the array;
-            // otherwise just increment it by 1
+            // circular increment of head
             Q->head = (Q->head + 1) % Q->max;
     }
 }
