@@ -1,4 +1,4 @@
-// PRIORITY QUEUE : array implementation
+// PRIORITY QUEUE
 
 #include <inttypes.h>
 #include <stdio.h>
@@ -9,24 +9,32 @@
 #define FALSE 0
 
 typedef struct PriorityQueue {
-    int max;
-    int *head, *tail, **arr;
+    int max, // maximum queue size per priority
+        *head, // array of heads
+        *tail, // array of tails
+        **arr; // 2D array for holding queue elements
 } PriorityQueue;
 
+// creates a new priority queue which has
+// 5 queues of 5 different priorities
+// 0:max, 1:high, 2:normal, 3:low, 4:min
+// Each queue can store `max` elements.
+// The priority queue can store a total
+// of (max X 5) elements
 PriorityQueue* createQueue(int max)
 {
     PriorityQueue* Q = (PriorityQueue*)malloc(sizeof(PriorityQueue));
     Q->max = max;
 
-    // dynamically allocated
+    // dynamically allocate and initialize the arrays
 
     Q->head = (int*)malloc(sizeof(int) * 5);
     for (int i = 0; i < 5; ++i)
-        Q->head[i] = 0;
+        Q->head[i] = 0; // all heads init. to 0
 
     Q->tail = (int*)malloc(sizeof(int) * 5);
     for (int i = 0; i < 5; ++i)
-        Q->tail[i] = -1;
+        Q->tail[i] = -1; // all tails init. to -1
 
     Q->arr = (int**)malloc(sizeof(int*) * 5);
     for (int i = 0; i < 5; ++i)
@@ -35,6 +43,7 @@ PriorityQueue* createQueue(int max)
     return Q;
 }
 
+// returns the size of the queue
 int size(PriorityQueue* Q, int p)
 {
     if (Q->tail[p] == -1 && Q->head[p] == 0)
@@ -44,41 +53,46 @@ int size(PriorityQueue* Q, int p)
     return (Q->tail[p] >= Q->head[p]) ? diff : Q->max + diff;
 }
 
+// returns true if the queue is empty
 int queueEmpty(PriorityQueue* Q, int p) { return (size(Q, p) == 0) ? TRUE : FALSE; }
 
+// returns true if the queue is full
 int queueFull(PriorityQueue* Q, int p) { return (size(Q, p) == Q->max) ? TRUE : FALSE; }
 
+// adds a data element to the queue end
 void enqueue(PriorityQueue* Q, int data, int p)
 {
     if (queueFull(Q, p))
         printf("\n\033[31mOverflow\033[0m\n");
 
     else {
-        if (Q->tail[p] == Q->max - 1)
-            Q->tail[p] = 0;
-        else
-            Q->tail[p] += 1;
+        // circular increment of the tail of the queue with priority p
+        Q->tail[p] = (Q->tail[p] + 1) % Q->max;
 
+        // put the new data at the tail of the queue with priority p
         Q->arr[p][Q->tail[p]] = data;
     }
 }
 
+// removes a data element from the queue front
 void dequeue(PriorityQueue* Q)
 {
     for (int p = 0; p < 5; ++p) {
         if (!queueEmpty(Q, p)) {
-            // print instead of return
+
+            // print de-queued
             printf("\nDequeued: %d\n", Q->arr[p][Q->head[p]]);
 
+            // coincidence of head and tail implies
+            // that the queue has become empty, so
+            // we reset both of them
             if (Q->head[p] == Q->tail[p]) {
                 Q->head[p] = 0;
                 Q->tail[p] = -1;
 
-            } else if (Q->head[p] == Q->max - 1)
-                Q->head[p] = 0;
-
-            else
-                Q->head[p] += 1;
+            } else
+                // circular increment of the head of the queue with priority p
+                Q->head[p] = (Q->head[p] + 1) % Q->max;
 
             return;
         }
@@ -87,11 +101,11 @@ void dequeue(PriorityQueue* Q)
     printf("\n\033[31mUnderflow\033[0m\n");
 }
 
-void front(PriorityQueue* Q)
+// shows the element at the queue front
+void peekFront(PriorityQueue* Q)
 {
     for (int p = 0; p < 5; ++p) {
         if (!queueEmpty(Q, p)) {
-            // print instead of return
             printf("\nFront(HEAD): %d\n", Q->arr[p][Q->head[p]]);
             return;
         }
@@ -100,9 +114,20 @@ void front(PriorityQueue* Q)
     printf("\nQueue Empty\n");
 }
 
-// incomplete
-void back(PriorityQueue* Q) { }
+// shows the element at the queue end
+void peekBack(PriorityQueue* Q)
+{
+    for (int p = 4; p >= 0; --p) {
+        if (!queueEmpty(Q, p)) {
+            printf("\nBack(TAIL): %d\n", Q->arr[p][Q->tail[p]]);
+            return;
+        }
+    }
 
+    printf("\nQueue Empty\n");
+}
+
+// prints the queue
 void print(PriorityQueue* Q)
 {
     int empty = TRUE;
@@ -160,11 +185,11 @@ void main(void)
 
             // `pf` to view front (HEAD)
             else if (strcmp(input, "pf") == 0)
-                front(q);
+                peekFront(q);
 
             // `pb` to view back (TAIL)
             else if (strcmp(input, "pb") == 0)
-                back(q);
+                peekBack(q);
 
             // `d` to deque
             else if (strcmp(input, "d") == 0) {
