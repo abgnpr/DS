@@ -58,6 +58,7 @@ void enqueue(Queue* Q, int data)
         // circular increment of tail
         Q->tail = (Q->tail + 1) % Q->max;
 
+        // put new data at tail
         Q->arr[Q->tail] = data;
     }
 }
