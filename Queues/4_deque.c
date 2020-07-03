@@ -137,7 +137,7 @@ void peekLeft(Queue* Q)
         printf("\nQueue Empty\n");
     else
         // print instead of return
-        printf("\nFront(HEAD): %d\n", Q->arr[Q->left]);
+        printf("\nLeft: %d\n", Q->arr[Q->left]);
 }
 
 // shows the element at the right end of the queue
@@ -147,7 +147,7 @@ void peekRight(Queue* Q)
         printf("\nQueue Empty\n");
     else
         // print instead of return
-        printf("\nBack(TAIL): %d\n", Q->arr[Q->right]);
+        printf("\nRight: %d\n", Q->arr[Q->right]);
 }
 
 // prints the queue
@@ -157,7 +157,7 @@ void print(Queue* Q)
         printf("\nQueue empty\n");
 
     else {
-        printf("\n\033[33m  head{\033[0m");
+        printf("\n\033[33m  left{\033[0m");
 
         for (int n = 1, i = Q->left; n <= size(Q); ++n) {
             if (i != Q->left)
@@ -167,7 +167,7 @@ void print(Queue* Q)
             i = (i == Q->max - 1) ? 0 : ++i;
         }
 
-        printf("\033[33m}tail\033[0m\n");
+        printf("\033[33m}right\033[0m\n");
     }
 }
 
