@@ -1,3 +1,5 @@
+// QUEUE : linked list implementation
+
 #include <inttypes.h>
 #include <stdio.h>
 #include <stdlib.h>
