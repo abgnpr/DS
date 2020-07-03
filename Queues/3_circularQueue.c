@@ -34,13 +34,12 @@ int size(Queue* Q)
         return 0;
 
     // calculate the number of elements from head to tail
-    int res = Q->tail - Q->head + 1;
-
-    // result +ve (i.e. head is on the left of tail),
-    //      size = result
-    // result -ve (i.e. tail is on the left of head),
-    // 		size = max - |result| = max + result
-    return (Q->tail >= Q->head) ? res : Q->max + res;
+    int diff = Q->tail - Q->head + 1;
+    // diff +ve (i.e. head is on the left of tail),
+    //      size = diff
+    // diff -ve (i.e. tail is on the left of head),
+    // 		size = max - |diff| = max + diff
+    return (Q->tail >= Q->head) ? diff : Q->max + diff;
 }
 
 // returns true if the queue is empty
@@ -72,6 +71,8 @@ void dequeue(Queue* Q)
     else {
         // print de-queued
         printf("\nDequeued: %d\n", Q->arr[Q->head]);
+
+        // update head
 
         // coincidence of head and tail implies
         // that the queue has become empty, so
