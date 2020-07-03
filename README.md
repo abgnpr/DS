@@ -23,6 +23,8 @@
 *   Queue using array
 *   Queue using linked list
 *   Circular Queue
+*   Deque
+*   Priority Queue
 
 ### Recursion
 
