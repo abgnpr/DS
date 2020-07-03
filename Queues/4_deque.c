@@ -15,6 +15,7 @@ typedef struct Queue {
     int arr[];
 } Queue;
 
+// creates a new queue of size 'max'
 Queue* createQueue(int max)
 {
     Queue* Q = malloc(sizeof(Queue) + sizeof(int) * max);
@@ -24,93 +25,112 @@ Queue* createQueue(int max)
     return Q;
 }
 
+// returns the size of the queue
 int size(Queue* Q)
 {
+    // queue has 0 elements when head and
+    // tail are both at initial position
     if (Q->right == -1 && Q->left == 0)
         return 0;
 
+    // calculate the number of elements from head to tail
     int diff = Q->right - Q->left + 1;
+    // diff +ve (i.e. head is on the left of tail),
+    //      size = diff
+    // diff -ve (i.e. tail is on the left of head),
+    // 		size = max - |diff| = max + diff
     return (Q->right >= Q->left) ? diff : Q->max + diff;
 }
 
+// returns true if the queue is empty
 int queueEmpty(Queue* Q) { return (size(Q) == 0) ? TRUE : FALSE; }
 
+// returns true if the queue if full
 int queueFull(Queue* Q) { return (size(Q) == Q->max) ? TRUE : FALSE; }
 
+// adds a data element to the right end of the queue
 void enqueueRight(Queue* Q, int data)
 {
     if (queueFull(Q))
-        printf("\033[31mOverflow\033[0m");
+        printf("\n\033[31mOverflow\033[0m\n");
 
     else {
-        if (Q->right == Q->max - 1)
-            Q->right = 0;
-        else
-            Q->right += 1;
+        // circular increment of `right`
+        Q->right = (Q->right + 1) % Q->max;
 
+        // put new data at righty
         Q->arr[Q->right] = data;
     }
 }
 
+// removes a data element from the left end queue
 void dequeueLeft(Queue* Q)
 {
     if (queueEmpty(Q))
-        printf("\033[31mUnderflow\033[0m");
+        printf("\n\033[31mUnderflow\033[0m\n");
 
     else {
-        // print instead of return
+        // print de-queued
         printf("\nDequeued: %d\n", Q->arr[Q->left]);
         Q->arr[Q->left] = 0;
 
+        // update left
+
+        // coincidence of left and right implies
+        // that the queue has become empty, so
+        // we reset both of them
         if (Q->left == Q->right) {
             Q->left = 0;
             Q->right = -1;
 
-        } else if (Q->left == Q->max - 1)
-            Q->left = 0;
-
-        else
-            Q->left += 1;
+        } else
+            // circular increment of `left`
+            Q->left = (Q->left + 1) % Q->max;
     }
 }
 
+// adds a data element to the left end of the queue
 void enqueueLeft(Queue* Q, int data)
 {
     if (queueFull(Q))
-        printf("\033[31mOverflow\033[0m");
+        printf("\n\033[31mOverflow\033[0m\n");
 
     else {
-        if (Q->left == 0)
-            Q->left = Q->max - 1;
-        else
-            Q->left -= 1;
+        // circular decrement of `left`
+        Q->left = (Q->left == 0) ? Q->max - 1 : Q->left - 1;
 
+        // put new data at left
         Q->arr[Q->left] = data;
     }
 }
 
+// removes a data element from the right end queue
 void dequeueRight(Queue* Q)
 {
     if (queueEmpty(Q))
-        printf("\033[31mUnderflow\033[0m");
+        printf("\n\033[31mUnderflow\033[0m\n");
 
     else {
-        // print instead of return
+        // print de-queued
         printf("\nDequeued: %d\n", Q->arr[Q->right]);
-        Q->arr[Q->right] = 0;
+
+        // update right
+
+        // coincidence of left and right implies
+        // that the queue has become empty, so
+        // we reset both of them
 
         if (Q->left == Q->right) {
             Q->left = 0;
             Q->right = -1;
 
-        } else if (Q->right == 0)
-            Q->right = Q->max - 1;
-
-        else
-            Q->right -= 1;
+        } else
+            // circular decrement of `right`
+            Q->right = (Q->right == 0) ? Q->max - 1 : Q->right - 1;
     }
 }
 
+// shows the element at the left end of the queue
 void peekLeft(Queue* Q)
 {
     if (queueEmpty(Q))
@@ -120,6 +140,7 @@ void peekLeft(Queue* Q)
         printf("\nFront(HEAD): %d\n", Q->arr[Q->left]);
 }
 
+// shows the element at the right end of the queue
 void peekRight(Queue* Q)
 {
     if (queueEmpty(Q))
@@ -129,6 +150,7 @@ void peekRight(Queue* Q)
         printf("\nBack(TAIL): %d\n", Q->arr[Q->right]);
 }
 
+// prints the queue
 void print(Queue* Q)
 {
     if (queueEmpty(Q))
@@ -144,7 +166,7 @@ void print(Queue* Q)
 
             i = (i == Q->max - 1) ? 0 : ++i;
         }
-        
+
         printf("\033[33m}tail\033[0m\n");
     }
 }
@@ -170,7 +192,7 @@ void main(void)
     printf("[e] : switch enqueue direction\n");
     printf("[dl]: dequeue left\n");
     printf("[dr]: dequeue right\n");
-    printf("[pf]: peek left\n");
+    printf("[pl]: peek left\n");
     printf("[pr]: peek right\n");
     printf("[q] : to quit\n");
 
