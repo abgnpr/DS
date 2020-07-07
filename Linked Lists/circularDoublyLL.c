@@ -166,7 +166,7 @@ void deleteList(CircularLinkedList* CLL)
 }
 
 // Traverses and prints data of each node
-void traverse(CircularLinkedList* CLL)
+void traverseAndPrint(CircularLinkedList* CLL)
 {
     Node* node;
     if ((node = CLL->start) != NULL) {
@@ -186,11 +186,11 @@ int main(void)
     // insert at beginning
     // ------------------------------------------
     printf("\nINSERT@BEGINNING\nOriginal : ");
-    traverse(CDLL);
+    traverseAndPrint(CDLL);
     for (int i = 1; i <= 5; ++i) {
         printf("insert(%d): ", i);
         insertBeg(CDLL, i);
-        traverse(CDLL);
+        traverseAndPrint(CDLL);
     }
     deleteList(CDLL);
     // ------------------------------------------
@@ -198,11 +198,11 @@ int main(void)
     // insert at end
     // ------------------------------------------
     printf("\nINSERT@END\nOriginal : ");
-    traverse(CDLL);
+    traverseAndPrint(CDLL);
     for (int i = 1; i <= 5; ++i) {
         printf("insert(%d): ", i);
         insertEnd(CDLL, i);
-        traverse(CDLL);
+        traverseAndPrint(CDLL);
     }
     deleteList(CDLL);
     // ------------------------------------------
@@ -212,11 +212,11 @@ int main(void)
     for (int i = 1; i <= 5; ++i)
         insertEnd(CDLL, i);
     printf("\nDELETE^FIRST\nOriginal     : ");
-    traverse(CDLL);
+    traverseAndPrint(CDLL);
     for (int i = 1; i <= 5; ++i) {
         printf("deleteFirst(): ");
         deleteFirst(CDLL);
-        traverse(CDLL);
+        traverseAndPrint(CDLL);
     }
     deleteList(CDLL);
     // ------------------------------------------
@@ -226,11 +226,11 @@ int main(void)
     for (int i = 1; i <= 5; ++i)
         insertEnd(CDLL, i);
     printf("\nDELETE^LAST\nOriginal    : ");
-    traverse(CDLL);
+    traverseAndPrint(CDLL);
     for (int i = 1; i <= 5; ++i) {
         printf("deleteLast(): ");
         deleteLast(CDLL);
-        traverse(CDLL);
+        traverseAndPrint(CDLL);
     }
     deleteList(CDLL);
     // ------------------------------------------
