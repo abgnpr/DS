@@ -107,7 +107,7 @@ void insertAfter(int val, DoublyLinkedList* DLL, int data)
     }
 }
 
-// Inserts before the node whose data is `val`
+// Inserts before the node whose data equals `val`
 void insertBefore(int val, DoublyLinkedList* DLL, int data)
 {
     // scan all nodes
@@ -180,7 +180,7 @@ void deleteLast(DoublyLinkedList* DLL)
     free(node);
 }
 
-// Deletes a node after the node whose data is val
+// Deletes a node after the node whose data equals `val`
 void deleteAfter(int val, DoublyLinkedList* DLL)
 {
     // return if the list is empty
@@ -211,7 +211,7 @@ void deleteAfter(int val, DoublyLinkedList* DLL)
     }
 }
 
-// Deletes the node whose data is `val`
+// Deletes the node whose data equals `val`
 void deleteNode (int val, DoublyLinkedList* DLL)
 {
     // return if the list is empty
@@ -256,8 +256,8 @@ void deleteList(DoublyLinkedList* DLL)
 // Traverses and prints data of each node
 void traverse(DoublyLinkedList* DLL)
 {
-    Node* node;
-    if ((node = DLL->start) != NULL) {
+    Node* node = DLL->start;
+    if (node != NULL) {
         printf("[%d]", node->data);
         while ((node = node->next) != NULL)
             printf(" <=> [%d]", node->data);
