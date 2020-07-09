@@ -144,7 +144,7 @@ void deleteFirst(SinglyLinkedList* SLL)
     free(first);
 }
 
-// Delete the last node
+// Deletes the last node
 void deleteLast(SinglyLinkedList* SLL)
 {
     // return if the list is empty
