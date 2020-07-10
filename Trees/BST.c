@@ -257,7 +257,7 @@ int totalExternalNodes(BST* T)
     return totalExternalNodes(T->left) + totalExternalNodes(T->right);
 }
 
-// Traverses the tree T in order and prints each node
+// Traverses the tree T pre order and prints each node
 // before its left and right children have been printed
 void preOrder(BST* T)
 {
