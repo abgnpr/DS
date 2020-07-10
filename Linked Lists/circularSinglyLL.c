@@ -160,8 +160,8 @@ void deleteList(CircularLinkedList* CLL)
 // Traverses and prints data of each node
 void traverseAndPrint(CircularLinkedList* CLL)
 {
-    Node* node;
-    if ((node = CLL->start) != NULL) {
+    Node* node = CLL->start;
+    if (node != NULL) {
         printf("[%d]", node->data);
         while ((node = node->next) != CLL->start)
             printf(" -> [%d]", node->data);

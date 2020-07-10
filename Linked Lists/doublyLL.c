@@ -5,7 +5,7 @@
 
 typedef struct Node {
     int data;
-    struct Node *next, *prev;
+    struct Node *prev, *next;
 } Node;
 
 Node* createNewNode(int data)

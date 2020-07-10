@@ -37,6 +37,19 @@ void deleteList(SinglyLinkedList* SLL)
     SLL->start = NULL;
 }
 
+// returns a pointer to the node whose data matches `val`;
+// NULL otherwise
+Node* search(int val, SinglyLinkedList* SLL)
+{
+    // traverse through the list until we find a
+    // node with matching data or reach the end
+    Node* cur = SLL->start;
+    while (cur != NULL && val != cur->data)
+        cur = cur->next;
+
+    return cur;
+}
+
 // Inserts a node at the beginning
 void insertBeg(SinglyLinkedList* SLL, int data)
 {
@@ -205,7 +218,7 @@ void deleteAfter(int val, SinglyLinkedList* SLL)
 }
 
 // Deletes the node whose data is `val`
-void deleteNode (int val, SinglyLinkedList* SLL)
+void deleteNode(int val, SinglyLinkedList* SLL)
 {
     // return if the list is empty
     if (SLL->start == NULL)
