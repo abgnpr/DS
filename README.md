@@ -26,6 +26,7 @@
 *   Deque
 *   Priority Queue
 
+
 ### Recursion
 
 *   Euclidean GCD
@@ -36,3 +37,9 @@
 
 *   Binary Search Tree
 *   AVL Tree
+
+
+### Heaps
+
+*   Max heap using array
+*   Heapsort (descending)
