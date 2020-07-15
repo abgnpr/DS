@@ -7,8 +7,9 @@
 #define NOT_FOUND -1
 
 typedef struct Node {
-    int *keys, nKeys;
+    int *keys, nKeys, parentIndex;
     struct Node **ptrs, *parent;
+    // deques may be used for more clarity
 } Node;
 
 Node* newNode()
@@ -75,116 +76,139 @@ int search(BTree* BT, int key, Node** node)
     return NOT_FOUND;
 }
 
-/*
+#define TRUE 1
+#define FALSE 0
+#define ROOT 0
+#define INTERNAL 1
+#define LEAF 2
+
 typedef struct SearchResult {
-    Node* node;
-    int index;
+
+    Node *node, // node in which the search key is found
+        *parent; // parent of node
+
+    int found, // whether the key is found (true / false)
+        index, // index of the search key in node
+        pIndex, // index of the pointer to node in the parent node
+        nodeType; // ROOT, LEAF or INTERNAL
+
 } SearchResult;
 
-int searchV2(BTree* BT, int key, Node** node)
+SearchResult searchV2(BTree* BT, int key)
 {
+    SearchResult r;
+
     if (BT->root == NULL) {
-        *node = NULL;
-        return NOT_FOUND;
+        r.found = FALSE;
+        return r;
     }
 
-    *node = BT->root;
+    r.node = BT->root;
+    r.nodeType = ROOT;
+    r.parent = NULL;
 
     for (;;) {
-        
-        int L = 0, R = (*node)->nKeys - 1, mid;
+
+        int L = 0, R = r.node->nKeys - 1, mid;
         while (L <= R) {
             mid = (L + R) / 2;
-            if (key == (*node)->keys[mid])
-                return mid;
-            else if (key < (*node)->keys[mid])
+            if (key == r.node->keys[mid]) {
+                r.found = TRUE;
+                r.index = mid;
+                return r;
+            } else if (key < r.node->keys[mid])
                 R = mid - 1;
             else
                 L = mid + 1;
         }
 
-        if ((*node)->ptrs[L] != NULL)
-            *node = (*node)->ptrs[L];
-        else
+        if (r.node->ptrs[L] != NULL) {
+            r.parent = r.node;
+            r.pIndex = L;
+            r.node = r.node->ptrs[L];
+
+        } else {
+            r.nodeType = LEAF;
             break;
+        }
     }
 
-    return NOT_FOUND;
+    r.found = FALSE;
+    return r;
 }
-*/
 
-void delKey(Node* node, int index)
+void delKey(Node* node, int keyIndex)
 {
-    for (int i = index + 1; i < node->nKeys; ++i)
+    for (int i = keyIndex + 1; i < node->nKeys; ++i)
         node->keys[i - 1] = node->keys[i];
 
     node->nKeys -= 1;
 }
 
-void insKey(Node* node, int key)
+void rebalance(BTree* BT, Node* node)
 {
+    Node *rSib = node->parent->ptrs[node->parentIndex - 1], // right sibling
+        *lSib = node->parent->ptrs[node->parentIndex + 1]; // left sibling
+
+    if (rSib && rSib->nKeys > (M - 1) / 2) {
+        node->keys[node->nKeys++] = node->parent->keys[node->parentIndex];
+        node->parent->keys[node->parentIndex] = rSib->keys[0];
+        delKey(rSib, 0);
+
+    } else if (lSib && lSib->nKeys > (M - 1) / 2) {
+        for (int i = node->nKeys; i > 0; --i)
+            node->keys[i] = node->keys[i - 1];
+        node->keys[0] = node->parent->keys[node->parentIndex - 1];
+        node->nKeys += 1;
+        node->parent->keys[node->parentIndex - 1] = lSib->keys[lSib->nKeys - 1];
+        delKey(rSib, lSib->nKeys - 1);
+
+    } else {
+        Node *left, *right;
+
+        if (lSib) {
+            left = lSib;
+            right = node;
+        } else {
+            left = node;
+            right = rSib;
+        }
+
+        left->keys[left->nKeys++] = left->parent->keys[left->parentIndex];
+        for (int j = 0; j < right->nKeys; ++j)
+            left->keys[left->nKeys++] = right->keys[j];
+        freeNode(right);
+        delKey(left->parent, left->parentIndex);
+
+        if (left->parent == BT->root && BT->root->nKeys == 0) {
+            freeNode(BT->root);
+            BT->root = left;
+
+        } else if (left->parent->nKeys < (M - 1) / 2)
+            rebalance(BT, left->parent);
+    }
 }
 
 void del(BTree* BT, int key)
 {
-    if (BT->root == NULL) {
-        printf("%d doesn't exist.\n", key);
-        return;
+    SearchResult d = searchV2(BT, key);
+
+    if (d.found == FALSE)
+        printf("%d doesn't exist!\n", key);
+
+    else if (d.nodeType == LEAF) {
+        delKey(d.node, d.index);
+        if (d.node->nKeys < (M - 1) / 2)
+            rebalance(BT, d.node);
     }
 
-    // node from which the key is to be deleted
-    Node* node = BT->root;
-    int d, // index of the key to be deleted
-        p; // index of node in the parent's ptrs[]
-
-    for (;;) {
-
-        int L = 0, R = node->nKeys - 1, mid;
-        while (L <= R) {
-            mid = (L + R) / 2;
-            if (key == node->keys[mid]) {
-                d = mid;
-                break;
-            } else if (key < node->keys[mid])
-                R = mid - 1;
-            else
-                L = mid + 1;
-        }
-
-        // note: make sure we set all values in
-        // ptrs[] of all leaves to NULL, otherwise
-        // the following step will produce undefined
-        // results
-
-        if (node->ptrs[L] != NULL) {
-            p = L;
-            node = node->ptrs[L];
-        } else
-            break;
-    }
-
-    if (node->nKeys > (M - 1) / 2)
-        delKey(node, d);
-
-    else {
-        Node *LSib = node->parent->ptrs[p - 1], // left sibling
-             *RSib = node->parent->ptrs[p + 1]; // right sibling
-
-        if (LSib && LSib->nKeys > (M - 1) / 2) {
-            insKey(node, node->parent->keys[p -1]);
-            node->parent->keys[p - 1] = LSib->keys[LSib->nKeys - 1];
-            delKey(LSib, LSib->nKeys - 1);
-        }
-
-        else if (RSib && RSib->nKeys > (M - 1) / 2) {
-            insKey(node, node->parent->keys[p]);
-            node->parent->keys[p] = RSib->keys[0];
-            delKey(RSib, 0);
-        }
-
-        else {
-            
-        }
+    else if (d.nodeType == INTERNAL) {
+        BTree* rightSubtree;
+        rightSubtree->root = d.node->ptrs[d.index + 1];
+        Node* sNode = nodeWithSmallestKey(rightSubtree);
+        d.node->keys[d.index] = sNode->keys[0];
+        if (sNode->nKeys < (M - 1) / 2)
+            rebalance(BT, sNode);
     }
 }
 
@@ -201,6 +225,8 @@ void swapPtrs(Node** P, int m, int n)
     P[m] = P[n];
     P[n] = temp;
 }
+
+// how to get parentIndex
 
 void ins(BTree* BT, int key)
 {
@@ -228,7 +254,7 @@ void ins(BTree* BT, int key)
             for (; k > 0 && node->keys[k - 1] > node->keys[k]; --k) {
                 swapKeys(node->keys, k - 1, k);
                 swapPtrs(node->ptrs, k, k + 1);
-            }
+            } // todo: change to mergesort
 
             // now number of keys is increased by 1
             node->nKeys += 1;
@@ -241,7 +267,7 @@ void ins(BTree* BT, int key)
                 int midKey = node->keys[mid]; //  median key
                 Node* newnode = newNode(); // create a new node
 
-                // shift the second half to new node
+                // move the second half to new node
                 int i, j = 0;
                 for (i = mid + 1; i < node->nKeys; ++i, ++j) {
                     newnode->keys[j] = node->keys[i];
