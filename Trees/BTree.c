@@ -227,13 +227,33 @@ void swapPtrs(Node** P, int m, int n)
 }
 
 // how to get parentIndex
+#define UNDEFINED -1
 
 void ins(BTree* BT, int key)
 {
+    SearchResult r = searchV2(BT, key);
+    
+    if (r.found == TRUE) {
+        printf("%d already exists!\n", key);
+        return;
+    }
+    
     // if the tree is empty create a new node
-    if (BT->root == NULL)
+    if (BT->root == NULL) {
         BT->root = newNode();
+        BT->root->parentIndex = UNDEFINED;
+    }
 
+    Node* ptr = NULL;
+
+    for (;;) {
+        r.node->keys[r.node->nKeys] = key;
+        r.node->ptrs[r.node->nKeys + 1] = ptr;
+
+        
+    }
+
+    /*
     Node *node, *ptr = NULL;
     if (search(BT, key, &node) == NOT_FOUND) {
 
@@ -303,6 +323,7 @@ void ins(BTree* BT, int key)
 
     } else
         printf("%d already exists!", key);
+*/
 }
 
 void main(void)
