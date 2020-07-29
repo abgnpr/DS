@@ -9,7 +9,7 @@
 struct Vertex; // forward declaration
 
 // list of neighbours
-typedef struct NeighbourList{
+typedef struct NeighbourList {
     struct Vertex** arr;
     int size, used;
 } NbrList;
@@ -63,13 +63,10 @@ int search(char x)
 
     while (L <= R) {
         mid = (L + R) / 2;
-
         if (x == V[mid].val)
             return mid;
-
         else if (x < V[mid].val)
             R = mid - 1;
-
         else
             L = mid + 1;
     }
@@ -110,6 +107,7 @@ int addVertex(char x)
         }
 
         k = usedV++;
+        
         V[k].val = x;
         initNbrList(&V[k].nbr);
 
