@@ -68,10 +68,8 @@ void printAdjList(Graph &G) {
   cout << "\n_Adjacency List_____\n\n";
   for (auto v : G.V) {
     cout << " [" << v.val << "]: ";
-    for (auto e : v.out) {
-      Value adj = (v.val == e->src->val) ? e->dst->val : e->src->val;
-      cout << adj << " ";
-    }
+    for (auto e : v.out)
+      cout << e->dst->val << " ";
     cout << "\n";
   }
   cout << "____________________\n";
