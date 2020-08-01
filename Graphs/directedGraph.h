@@ -15,7 +15,7 @@ struct Edge {
 
 struct Vertex {
   Value val;
-  mutable set<set<Edge>::iterator> inc; // incident edges
+  mutable set<set<Edge>::iterator> inc; // incoming edges
   mutable set<set<Edge>::iterator> out; // outgoing edges
   Vertex(Value _val) : val(_val) {}
 };
