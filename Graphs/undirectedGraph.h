@@ -10,8 +10,7 @@ struct Vertex;
 
 struct Edge {
   set<Vertex>::iterator src, dst;
-  Edge(set<Vertex>::iterator _src, set<Vertex>::iterator _dst)
-      : src(_src), dst(_dst) {}
+  Edge(set<Vertex>::iterator _src, set<Vertex>::iterator _dst) : src(_src), dst(_dst) {}
 };
 
 struct Vertex {
