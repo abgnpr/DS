@@ -36,8 +36,8 @@ void addEdge(Graph &G, Value x, Value y) {
   auto iy = addVertex(G, y);
   if (G.E.find({ix, iy}) == G.E.end() && G.E.find({iy, ix}) == G.E.end()) {
     auto ie = G.E.insert({ix, iy}).first;
-    ix->inc.emplace(ie);
-    iy->inc.emplace(ie);
+    ix->inc.insert(ie);
+    iy->inc.insert(ie);
   }
 }
 
