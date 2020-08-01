@@ -37,9 +37,16 @@
 
 *   Binary Search Tree
 *   AVL Tree
+*   BTree ![Incomplete](https://img.shields.io/badge/status-incomplete-red)
 
 
 ### Heaps
 
 *   Max heap using array
 *   Heapsort (descending)
+
+
+### Graphs
+
+*   Undirected (adjacency list)
+*   Directed (adjacency list)
