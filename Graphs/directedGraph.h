@@ -65,12 +65,11 @@ void removeEdge(Graph &G, Value x, Value y) {
 }
 
 void printAdjList(Graph &G) {
-  cout << "\n_Adjacency List_____\n\n";
+  cout << "\n_Adjacency List_____\n";
   for (auto v : G.V) {
-    cout << " [" << v.val << "]: ";
+    cout << "\n [" << v.val << "]: ";
     for (auto e : v.out)
       cout << e->dst->val << " ";
-    cout << "\n";
   }
-  cout << "____________________\n";
+  cout << "\n____________________\n\n";
 }
