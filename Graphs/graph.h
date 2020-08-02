@@ -4,8 +4,8 @@ using namespace std;
 typedef char Value;
 
 struct Vertex;
-typedef set<Vertex>::iterator VertexIt;
 struct Edge;
+typedef set<Vertex>::iterator VertexIt;
 typedef set<Edge>::iterator EdgeIt;
 
 typedef map<Value, bool> ExplorationRecord;
