@@ -32,7 +32,7 @@ float Graph::shortestDistance(Value source, Value target) {
 }
 
 int main() {
-  UndirectedGraph G; // or DirectedGraph
+  UndirectedGraph /* or DirectedGraph */ G;
 
   G.addEdge('A', 'B');
   G.addEdge('B', 'C');
@@ -45,14 +45,6 @@ int main() {
 
   G.printAdjList();
 
-  // cout << G.shortestDistance('A', 'D') << "\n";
-  // cout << G.shortestDistance('9', 'C') << "\n";
-
-  // ConnectedComponents cc = G.connectedComponents();
-  // cout << "numCC = " << cc.size() << "\n";
-  // for (auto i = cc.begin(); i != cc.end(); ++i) {
-  //   for (auto v: i->second)
-  //     cout << v << " ";
-  //   cout << "\n";
-  // }
+  cout << G.shortestDistance('A', 'D') << "\n";
+  cout << G.shortestDistance('9', 'C') << "\n";
 }

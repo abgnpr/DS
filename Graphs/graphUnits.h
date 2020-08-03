@@ -12,8 +12,6 @@ typedef map<Value, bool> ExplorationRecord;
 typedef map<Value, float> DistanceRecord;
 typedef map<int, vector<Value>> ConnectedComponents;
 
-// clang-format off
-
 struct Vertex {
   Value val;
   mutable set<EdgeIt> inc; // incoming edges
@@ -29,7 +27,5 @@ struct Edge {
   Edge(VertexIt _src, VertexIt _dst) : src(_src), dst(_dst) {} // constructor
   bool operator<(const Edge &other) const { return src->val == other.src->val ? dst->val < other.dst->val : src->val < other.src->val; }
 };
-
-// clang-format on
 
 bool operator<(const EdgeIt &a, const EdgeIt &b) { return *a < *b; }

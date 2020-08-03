@@ -9,6 +9,7 @@ struct Graph {
   ExplorationRecord DFS(Value source);
   float shortestDistance(Value source, Value target);
   ConnectedComponents connectedComponents();
+  
   void printAdjList();
 };
 

@@ -25,7 +25,7 @@ ExplorationRecord Graph::BFS(Value source) {
 }
 
 int main() {
-  UndirectedGraph G;
+  UndirectedGraph /* or DirectedGraph */ G;
 
   G.addEdge('A', 'B');
   G.addEdge('B', 'C');
@@ -41,15 +41,4 @@ int main() {
   ExplorationRecord explored = G.BFS('D');
   explored['A'] ? cout << "A is reachable from D\n"
                 : cout << "A isn't reachable from D\n";
-
-  // cout << G.shortestDistance('A', 'D') << "\n";
-  // cout << G.shortestDistance('9', 'C') << "\n";
-
-  // ConnectedComponents cc = G.connectedComponents();
-  // cout << "numCC = " << cc.size() << "\n";
-  // for (auto i = cc.begin(); i != cc.end(); ++i) {
-  //   for (auto v: i->second)
-  //     cout << v << " ";
-  //   cout << "\n";
-  // }
 }
