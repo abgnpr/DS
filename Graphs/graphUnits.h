@@ -8,9 +8,9 @@ struct Edge;
 typedef set<Vertex>::iterator VertexIt;
 typedef set<Edge>::iterator EdgeIt;
 
-typedef map<Value, bool> ExplorationRecord;
-typedef map<Value, float> DistanceRecord;
-typedef map<int, vector<Value>> ConnectedComponents;
+typedef unordered_map<Value, bool> ExplorationRecord;
+typedef unordered_map<Value, float> DistanceRecord;
+typedef unordered_map<int, vector<Value>> ConnectedComponents;
 
 struct Vertex {
   Value val;
