@@ -10,6 +10,7 @@ typedef set<Edge>::iterator EdgeIt;
 
 typedef map<Value, bool> ExplorationRecord;
 typedef map<Value, float> DistanceRecord;
+typedef map<int, vector<Value>> ConnectedComponents;
 
 // clang-format off
 
@@ -40,7 +41,8 @@ struct Graph {
   ExplorationRecord BFS(Value source) {
     ExplorationRecord explored;
     queue<VertexIt> Q;
-    VertexIt v, dst;
+    VertexIt v, w;
+
     if ((v = V.find(source)) != V.end()) {
       explored[source] = true;
       Q.push(v);
@@ -48,10 +50,10 @@ struct Graph {
         v = Q.front();
         Q.pop();
         for (EdgeIt e : v->out) {
-          dst = (e->src == v) ? e->dst : e->src;
-          if (!explored[dst->val]) {
-            explored[dst->val] = true;
-            Q.push(dst);
+          w = (e->src == v) ? e->dst : e->src;
+          if (!explored[w->val]) {
+            explored[w->val] = true;
+            Q.push(w);
           }
         }
       }
@@ -69,10 +71,10 @@ struct Graph {
     DistanceRecord distance;
     ExplorationRecord explored;
     queue<VertexIt> Q;
-    VertexIt v, _src, _dst;
+    VertexIt v, _v, _w;
 
-    for (const auto &v_ : V)
-      distance[v_.val] = INFINITY;
+    for (const auto &i : V)
+      distance[i.val] = INFINITY;
 
     if ((v = V.find(source)) != V.end() && V.find(target) != V.end()) {
       explored[source] = true;
@@ -82,12 +84,12 @@ struct Graph {
         v = Q.front();
         Q.pop();
         for (EdgeIt e : v->out) {
-          _src = (e->src == v) ? e->src : e->dst; // required for
-          _dst = (e->src == v) ? e->dst : e->src; // undirected edges
-          if (!explored[_dst->val]) {
-            explored[_dst->val] = true;
-            Q.push(_dst);
-            distance[_dst->val] = distance[_src->val] + 1;
+          _v = (e->src == v) ? e->src : e->dst; // required for
+          _w = (e->src == v) ? e->dst : e->src; // undirected edges
+          if (!explored[_w->val]) {
+            explored[_w->val] = true;
+            Q.push(_w);
+            distance[_w->val] = distance[_v->val] + 1;
           }
         }
       }
@@ -97,6 +99,19 @@ struct Graph {
   }
 
   void DFS(Value source, ExplorationRecord &explored) {}
+
+  void printAdjList() {
+    cout << "\n_Adjacency List_____\n";
+    for (const auto &v : V) {
+      cout << "\n [" << v.val << "]: ";
+      for (const auto &e : v.out) {
+        // required for undirected
+        VertexIt dst = (v.val == e->src->val) ? e->dst : e->src;
+        cout << dst->val << " ";
+      }
+    }
+    cout << "\n____________________\n\n";
+  }
 };
 
 struct UndirectedGraph : public Graph {
@@ -139,17 +154,33 @@ struct UndirectedGraph : public Graph {
     }
   }
 
-  void printAdjList() {
-    cout << "\n_Adjacency List_____\n\n";
-    for (const auto &v : V) {
-      cout << " [" << v.val << "]: ";
-      for (const auto &e : v.out) {
-        VertexIt dst = (v.val == e->src->val) ? e->dst : e->src;
-        cout << dst->val << " ";
+  ConnectedComponents connectedComponents() {
+    ConnectedComponents CC;
+    ExplorationRecord explored;
+    queue<VertexIt> Q;
+    VertexIt v, w;
+
+    int numCC = 0;
+    for (const Vertex &i : V)
+      if (!explored[i.val]) {
+        numCC += 1;
+        explored[i.val] = true;
+        Q.push(V.find(i));
+        while (!Q.empty()) {
+          v = Q.front();
+          Q.pop();
+          CC[numCC].push_back(v->val);
+          for (EdgeIt e : v->out) {
+            w = (e->src == v) ? e->dst : e->src;
+            if (!explored[w->val]) {
+              explored[w->val] = true;
+              Q.push(w);
+            }
+          }
+        }
       }
-      cout << "\n";
-    }
-    cout << "____________________\n";
+
+    return CC;
   }
 };
 
@@ -186,15 +217,5 @@ struct DirectedGraph : public Graph {
       iy->inc.erase(ie);
       E.erase(ie);
     }
-  }
-
-  void printAdjList() {
-    cout << "\n_Adjacency List_____\n";
-    for (const auto &v : V) {
-      cout << "\n [" << v.val << "]: ";
-      for (const auto &e : v.out)
-        cout << e->dst->val << " ";
-    }
-    cout << "\n____________________\n\n";
   }
 };
