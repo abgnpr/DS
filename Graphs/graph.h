@@ -1,117 +1,15 @@
-#include <bits/stdc++.h>
-using namespace std;
-
-typedef char Value;
-
-struct Vertex;
-struct Edge;
-typedef set<Vertex>::iterator VertexIt;
-typedef set<Edge>::iterator EdgeIt;
-
-typedef map<Value, bool> ExplorationRecord;
-typedef map<Value, float> DistanceRecord;
-typedef map<int, vector<Value>> ConnectedComponents;
-
-// clang-format off
-
-struct Vertex {
-  Value val;
-  mutable set<EdgeIt> inc; // incoming edges
-  mutable set<EdgeIt> out; // outgoing edges
-
-  Vertex(Value _val) : val(_val) {} // constructor
-  bool operator<(const Vertex &other) const { return val < other.val; }
-};
-
-struct Edge {
-  VertexIt src, dst; // source and destination
-  
-  Edge(VertexIt _src, VertexIt _dst) : src(_src), dst(_dst) {} // constructor
-  bool operator<(const Edge &other) const { return src->val == other.src->val ? dst->val < other.dst->val : src->val < other.src->val; }
-};
-
-// clang-format on
-
-bool operator<(const EdgeIt &a, const EdgeIt &b) { return *a < *b; }
+#include "graphUnits.h"
 
 struct Graph {
   set<Vertex> V; // edge set
   set<Edge> E;   // vertex set
 
-  ExplorationRecord BFS(Value source) {
-    ExplorationRecord explored;
-    queue<VertexIt> Q;
-    VertexIt v, w;
-
-    if ((v = V.find(source)) != V.end()) {
-      explored[source] = true;
-      Q.push(v);
-      while (!Q.empty()) {
-        v = Q.front();
-        Q.pop();
-        for (EdgeIt e : v->out) {
-          w = (e->src == v) ? e->dst : e->src;
-          if (!explored[w->val]) {
-            explored[w->val] = true;
-            Q.push(w);
-          }
-        }
-      }
-    }
-
-    return explored;
-  }
-
-  bool reachable(Value source, Value target) {
-    ExplorationRecord explored = BFS(source);
-    return explored[target];
-  }
-
-  float shortestDistance(Value source, Value target) {
-    DistanceRecord distance;
-    ExplorationRecord explored;
-    queue<VertexIt> Q;
-    VertexIt v, _v, _w;
-
-    for (const auto &i : V)
-      distance[i.val] = INFINITY;
-
-    if ((v = V.find(source)) != V.end() && V.find(target) != V.end()) {
-      explored[source] = true;
-      distance[source] = 0;
-      Q.push(v);
-      while (!Q.empty()) {
-        v = Q.front();
-        Q.pop();
-        for (EdgeIt e : v->out) {
-          _v = (e->src == v) ? e->src : e->dst; // required for
-          _w = (e->src == v) ? e->dst : e->src; // undirected edges
-          if (!explored[_w->val]) {
-            explored[_w->val] = true;
-            Q.push(_w);
-            distance[_w->val] = distance[_v->val] + 1;
-          }
-        }
-      }
-    }
-
-    return distance[target];
-  }
-
-  void DFS(Value source, ExplorationRecord &explored) {}
-
-  void printAdjList() {
-    cout << "\n_Adjacency List_____\n";
-    for (const auto &v : V) {
-      cout << "\n [" << v.val << "]: ";
-      for (const auto &e : v.out) {
-        // required for undirected
-        VertexIt dst = (v.val == e->src->val) ? e->dst : e->src;
-        cout << dst->val << " ";
-      }
-    }
-    cout << "\n____________________\n\n";
-  }
+  // supported operations split in separate files
+  ExplorationRecord BFS(Value source);
+  ExplorationRecord DFS(Value source);
+  float shortestDistance(Value source, Value target);
+  ConnectedComponents connectedComponents();
+  void printAdjList();
 };
 
 struct UndirectedGraph : public Graph {
@@ -153,35 +51,6 @@ struct UndirectedGraph : public Graph {
       E.erase(ie);
     }
   }
-
-  ConnectedComponents connectedComponents() {
-    ConnectedComponents CC;
-    ExplorationRecord explored;
-    queue<VertexIt> Q;
-    VertexIt v, w;
-
-    int numCC = 0;
-    for (const Vertex &i : V)
-      if (!explored[i.val]) {
-        numCC += 1;
-        explored[i.val] = true;
-        Q.push(V.find(i));
-        while (!Q.empty()) {
-          v = Q.front();
-          Q.pop();
-          CC[numCC].push_back(v->val);
-          for (EdgeIt e : v->out) {
-            w = (e->src == v) ? e->dst : e->src;
-            if (!explored[w->val]) {
-              explored[w->val] = true;
-              Q.push(w);
-            }
-          }
-        }
-      }
-
-    return CC;
-  }
 };
 
 struct DirectedGraph : public Graph {
@@ -219,3 +88,16 @@ struct DirectedGraph : public Graph {
     }
   }
 };
+
+void Graph::printAdjList() {
+  cout << "\n_Adjacency List_____\n";
+  for (const auto &v : V) {
+    cout << "\n [" << v.val << "]: ";
+    for (const auto &e : v.out) {
+      // required for undirected
+      VertexIt dst = (v.val == e->src->val) ? e->dst : e->src;
+      cout << dst->val << " ";
+    }
+  }
+  cout << "\n____________________\n\n";
+}
