@@ -11,8 +11,8 @@ ConnectedComponents Graph::connectedComponents() {
   int numCC = 0;
   for (const Vertex &i : V)
     if (!explored[i.val]) {
-      numCC += 1;
       explored[i.val] = true;
+      numCC += 1;
       Q.push(V.find(i));
       while (!Q.empty()) {
         v = Q.front();
