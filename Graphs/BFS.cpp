@@ -1,3 +1,5 @@
+// BFS
+
 #include "graph.h"
 
 ExplorationRecord Graph::BFS(Value source) {
