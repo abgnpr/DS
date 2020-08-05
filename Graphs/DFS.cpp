@@ -2,20 +2,19 @@
 
 #include "graph.h"
 
-// iterative
-ExplorationRecord Graph::DFS(Value source) {
+// iterative DFS
+ExplorationRecord Graph::DFS(Vertex source) {
   ExplorationRecord explored;
-  stack<VertexIt> S;
-  VertexIt v = V.find(source), w;
+  stack<Vertex> S;
 
-  S.push(v);
+  S.push(source);
   while (!S.empty()) {
-    v = S.top();
+    Vertex v = S.top();
     S.pop();
-    if (!explored[v->val]) {
-      explored[v->val] = true;
-      for (EdgeIt e : v->out) {
-        w = (e->src == v) ? e->dst : e->src;
+    if (!explored[v]) {
+      explored[v] = true;
+      for (EdgeIt e : out[v]) {
+        Vertex w = (e->src == v) ? e->dst : e->src;
         S.push(w);
       }
     }
@@ -24,16 +23,14 @@ ExplorationRecord Graph::DFS(Value source) {
   return explored;
 }
 
-// recursive
-// precondition: a new instance of ExplorationRecord
-// must be passed otherwise the behaviour is undefined
-void Graph::DFS_rec(Value source, ExplorationRecord &explored) {
-  VertexIt s = V.find(source), v;
+// recursive DFS
+// precondition: a new or empty instance of ExplorationRecord must be passed
+void Graph::DFS_rec(Vertex source, ExplorationRecord &explored) {
   explored[source] = true;
-  for (EdgeIt e : s->out) {
-    v = (e->src == s) ? e->dst : e->src;
-    if (!explored[v->val])
-      DFS_rec(v->val, explored);
+  for (EdgeIt e : out[source]) {
+    Vertex v = (e->src == source) ? e->dst : e->src;
+    if (!explored[v])
+      DFS_rec(v, explored);
   }
 }
 
