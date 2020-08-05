@@ -18,6 +18,7 @@ bool operator<(const EdgeIt &a, const EdgeIt &b) { return *a < *b; }
 typedef unordered_map<Vertex, bool> ExplorationRecord;
 typedef unordered_map<Vertex, float> DistanceRecord;
 typedef unordered_map<int, vector<Vertex>> ConnectedComponents;
+typedef unordered_map<Vertex, int> Assortment;
 
 struct Graph {
   set<Vertex> V;
@@ -31,7 +32,6 @@ struct Graph {
   ExplorationRecord DFS(Vertex source);
   void DFS_rec(Vertex source, ExplorationRecord &explored);
   float shortestDistance(Vertex source, Vertex target);
-  ConnectedComponents connectedComponents();
 
   void printAdjList();
 };
@@ -46,9 +46,9 @@ struct UndirectedGraph : public Graph {
       V.insert(y);
 
     if (E.find({x, y}) == E.end() && E.find({y, x}) == E.end()) {
-      EdgeIt ie = E.insert({x, y}).first;
-      out[x].insert(ie);
-      out[y].insert(ie);
+      EdgeIt e = E.insert({x, y}).first;
+      out[x].insert(e);
+      out[y].insert(e);
     }
   }
 
@@ -63,14 +63,22 @@ struct UndirectedGraph : public Graph {
     }
   }
 
+  void removeEdge(EdgeIt e) {
+    out[e->src].erase(e);
+    out[e->dst].erase(e);
+    E.erase(e);
+  }
+
   void removeEdge(Vertex x, Vertex y) {
-    EdgeIt ie;
-    if ((ie = E.find({x, y})) != E.end() || (ie = E.find({y, x})) != E.end()) {
-      out[x].erase(ie);
-      out[y].erase(ie);
-      E.erase(ie);
+    EdgeIt e;
+    if ((e = E.find({x, y})) != E.end() || (e = E.find({y, x})) != E.end()) {
+      out[x].erase(e);
+      out[y].erase(e);
+      E.erase(e);
     }
   }
+
+  ConnectedComponents connectedComponents();
 };
 
 struct DirectedGraph : public Graph {
@@ -83,9 +91,9 @@ struct DirectedGraph : public Graph {
       V.insert(y);
 
     if (E.find({x, y}) == E.end()) {
-      EdgeIt ie = E.insert({x, y}).first;
-      out[x].insert(ie);
-      inc[y].insert(ie);
+      EdgeIt e = E.insert({x, y}).first;
+      out[x].insert(e);
+      inc[y].insert(e);
     }
   }
 
@@ -99,14 +107,24 @@ struct DirectedGraph : public Graph {
     }
   }
 
+  void removeEdge(EdgeIt e) {
+    out[e->src].erase(e);
+    inc[e->dst].erase(e);
+    E.erase(e);
+  }
+
   void removeEdge(Vertex x, Vertex y) {
-    EdgeIt ie;
-    if ((ie = E.find({x, y})) != E.end() || (ie = E.find({y, x})) != E.end()) {
-      out[x].erase(ie);
-      inc[y].erase(ie);
-      E.erase(ie);
+    EdgeIt e;
+    if ((e = E.find({x, y})) != E.end() || (e = E.find({y, x})) != E.end()) {
+      out[x].erase(e);
+      inc[y].erase(e);
+      E.erase(e);
     }
   }
+
+  ConnectedComponents stronglyConnectedComponents();
+
+  void topoSort();
 };
 
 void Graph::printAdjList() {
