@@ -18,7 +18,7 @@ bool operator<(const EdgeIt &a, const EdgeIt &b) { return *a < *b; }
 typedef unordered_map<Vertex, bool> ExplorationRecord;
 typedef unordered_map<Vertex, float> DistanceRecord;
 typedef unordered_map<int, vector<Vertex>> ConnectedComponents;
-typedef unordered_map<Vertex, int> Assortment;
+typedef forward_list<Vertex> Assortment;
 
 struct Graph {
   set<Vertex> V;
@@ -124,7 +124,7 @@ struct DirectedGraph : public Graph {
 
   ConnectedComponents stronglyConnectedComponents();
 
-  void topoSort();
+  Assortment topoSort();
 };
 
 void Graph::printAdjList() {
