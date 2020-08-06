@@ -40,11 +40,8 @@ struct UndirectedGraph : public Graph {
   void addVertex(Vertex x) { V.insert(x); }
 
   void addEdge(Vertex x, Vertex y) {
-    if (V.find(x) == V.end())
-      V.insert(x);
-    if (V.find(y) == V.end())
-      V.insert(y);
-
+    V.insert(x);
+    V.insert(y);
     if (E.find({x, y}) == E.end() && E.find({y, x}) == E.end()) {
       EdgeIt e = E.insert({x, y}).first;
       out[x].insert(e);
@@ -85,11 +82,8 @@ struct DirectedGraph : public Graph {
   void addVertex(Vertex x) { V.insert(x); }
 
   void addEdge(Vertex x, Vertex y) {
-    if (V.find(x) == V.end())
-      V.insert(x);
-    if (V.find(y) == V.end())
-      V.insert(y);
-
+    V.insert(x);
+    V.insert(y);
     if (E.find({x, y}) == E.end()) {
       EdgeIt e = E.insert({x, y}).first;
       out[x].insert(e);
