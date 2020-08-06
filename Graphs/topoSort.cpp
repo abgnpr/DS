@@ -2,20 +2,22 @@
 
 #include "graph.h"
 
+// note: behaviour undefined if cycles are present
 Assortment DirectedGraph::topoSort() {
   Assortment assorted;
   stack<Vertex> S;
   ExplorationRecord explored;
 
-  for (Vertex _v : V) {
-    if (!explored[_v]) {
-      S.push(_v);
+  for (Vertex i : V) {
+    if (!explored[i]) {
+      S.push(i);
 
       while (!S.empty()) {
         Vertex v = S.top();
         if (!explored[v]) {
-          int outCount = 0;
           explored[v] = true;
+          
+          int outCount = 0;
           for (EdgeIt e : out[v]) {
             Vertex w = e->dst;
             if (!explored[w]) {
