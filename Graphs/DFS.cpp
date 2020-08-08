@@ -25,6 +25,7 @@ ExplorationRecord Graph::DFS(Vertex source) {
 
 // recursive DFS
 // precondition: a new or empty instance of ExplorationRecord must be passed
+// since it is an auxilary parameter
 void Graph::DFS_rec(Vertex source, ExplorationRecord &explored) {
   explored[source] = true;
   for (EdgeIt e : out[source]) {
@@ -50,11 +51,14 @@ int main() {
 
   ExplorationRecord explored = G.DFS('D');
   explored['A'] ? cout << "A is reachable from D\n"
-                : cout << "A isn't reachable from D\n";
+                : cout << "A is unreachable from D\n";
+
+  explored = G.DFS('Z');
+  explored['A'] ? cout << "A is reachable from Z\n"
+                : cout << "A is unreachable from Z\n\n";
 
   explored.clear();
-
   G.DFS_rec('Z', explored);
   explored['x'] ? cout << "x is reachable from Z\n"
-                : cout << "x isn't reachable from Z\n";
+                : cout << "x is unreachable from Z\n";
 }

@@ -2,26 +2,25 @@
 
 #include "graph.h"
 
-ConnectedComponents Graph::connectedComponents() {
+ConnectedComponents UndirectedGraph::connectedComponents() {
   ConnectedComponents CC;
   ExplorationRecord explored;
-  queue<VertexIt> Q;
-  VertexIt v, w;
+  queue<Vertex> Q;
 
   int numCC = 0;
-  for (const Vertex &i : V)
-    if (!explored[i.val]) {
-      explored[i.val] = true;
+  for (Vertex i : V)
+    if (!explored[i]) {
+      explored[i] = true;
       numCC += 1;
-      Q.push(V.find(i));
+      Q.push(i);
       while (!Q.empty()) {
-        v = Q.front();
+        Vertex v = Q.front();
         Q.pop();
-        CC[numCC].push_back(v->val);
-        for (EdgeIt e : v->out) {
-          w = (e->src == v) ? e->dst : e->src;
-          if (!explored[w->val]) {
-            explored[w->val] = true;
+        CC[numCC].push_back(v);
+        for (EdgeIt e : out[v]) {
+          Vertex w = (e->src == v) ? e->dst : e->src;
+          if (!explored[w]) {
+            explored[w] = true;
             Q.push(w);
           }
         }
