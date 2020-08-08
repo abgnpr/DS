@@ -2,23 +2,20 @@
 
 #include "graph.h"
 
-ExplorationRecord Graph::BFS(Value source) {
+ExplorationRecord Graph::BFS(Vertex source) {
   ExplorationRecord explored;
-  queue<VertexIt> Q;
-  VertexIt v, w;
+  queue<Vertex> Q;
 
-  if ((v = V.find(source)) != V.end()) {
-    explored[source] = true;
-    Q.push(v);
-    while (!Q.empty()) {
-      v = Q.front();
-      Q.pop();
-      for (EdgeIt e : v->out) {
-        w = (e->src == v) ? e->dst : e->src;
-        if (!explored[w->val]) {
-          explored[w->val] = true;
-          Q.push(w);
-        }
+  explored[source] = true;
+  Q.push(source);
+  while (!Q.empty()) {
+    Vertex v = Q.front();
+    Q.pop();
+    for (EdgeIt e : out[v]) {
+      Vertex w = (e->src == v) ? e->dst : e->src;
+      if (!explored[w]) {
+        explored[w] = true;
+        Q.push(w);
       }
     }
   }
@@ -27,7 +24,7 @@ ExplorationRecord Graph::BFS(Value source) {
 }
 
 int main() {
-  UndirectedGraph /* or DirectedGraph */ G;
+  UndirectedGraph G; // or DirectedGraph
 
   G.addEdge('A', 'B');
   G.addEdge('B', 'C');
@@ -42,5 +39,9 @@ int main() {
 
   ExplorationRecord explored = G.BFS('D');
   explored['A'] ? cout << "A is reachable from D\n"
-                : cout << "A isn't reachable from D\n";
+                : cout << "A is unreachable from D\n";
+
+  explored = G.BFS('A');
+  explored['Z'] ? cout << "Z is reachable from A\n"
+                : cout << "Z is unreachable from A\n\n";
 }
