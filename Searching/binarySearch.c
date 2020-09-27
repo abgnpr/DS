@@ -3,16 +3,16 @@
 /* searches N in the sorted sequence of NUMBERS 
 having length LEN; returns the position of N if found,
 -1 otherwise */
-int binarySearch(int n, int numbers[], int len)
+int binarySearch(int number, int numbers[], int len)
 {
     int lo = 0, hi = len - 1, mid;
 
     while (lo <= hi)
     {
         mid = (lo + hi) / 2;
-        if (n < numbers[mid])
+        if (number < numbers[mid])
             hi = mid - 1;
-        else if (n > numbers[mid])
+        else if (number > numbers[mid])
             lo = mid + 1;
         else
             return mid; // found match
