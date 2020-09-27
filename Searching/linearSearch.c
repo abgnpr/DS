@@ -2,11 +2,11 @@
 
 /* searches N in NUMBERS of length LEN;
 returns the position of N if found, -1 otherwise */
-int seqSearch(int n, int numbers[], int len)
+int linearSearch(int number, int numbers[], int len)
 {
-    for (int i = 0; i < len; i++)
-        if (n == numbers[i])
-            return i;
+    for (int pos = 0; pos < len; pos++)
+        if (number == numbers[pos])
+            return pos;
 
     return -1;
 }
