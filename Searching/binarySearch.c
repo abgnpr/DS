@@ -7,7 +7,7 @@ int binarySearch(int n, int numbers[], int len)
 {
     int lo = 0, hi = len - 1, mid;
 
-    while (lo < hi)
+    while (lo <= hi)
     {
         mid = (lo + hi) / 2;
         if (n < numbers[mid])
@@ -27,7 +27,7 @@ void main(void)
     int numbers[] = {-10, 12, 25, 47, 100}; // pre-sorted
     int len = 5;
 
-    int n = -10;
+    int n = 100;
     int pos = binarySearch(n, numbers, len);
 
     if (pos == -1)
