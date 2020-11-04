@@ -11,7 +11,7 @@
 #define MAX 10
 int
     heap[MAX], // a heap of size 'MAX'
-    n = -1; // number of elements in the heap
+    n = -1; // indicates the last occupied pos
 
 // returns true if the heap is empty
 int heapEmpty() { return (n == -1) ? 1 : 0; }
@@ -27,7 +27,7 @@ void swap(int m, int n)
     heap[n] = temp;
 }
 
-// inserts a new 'data' element into the heap
+// inserts a new element `data` into the heap
 int ins(int data)
 {
     if (heapFull())
@@ -45,7 +45,7 @@ int ins(int data)
     // move the new data to its appropriate place
     // by swaping it with its parent till its
     // parent is smaller than itself or it has
-    // reaches the top of the heap.
+    // reached the top of the heap.
     while (pos > 0 && heap[par] < heap[pos]) {
         swap(pos, par);
         pos = par;
