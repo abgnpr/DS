@@ -30,7 +30,7 @@ void radixSort(int A[], int n)
     int bucket[10][n], bucketCount[10];
     int nod = digits(findBiggest(A, n)); // digits in the biggest number
 
-    for (int pass = 0; pass <= nod; ++pass)
+    for (int pass = 0; pass < nod; ++pass)
     {
         for (int i = 0; i <= 9; ++i)
             bucketCount[i] = 0;
