@@ -7,7 +7,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-static inline int max(int a, int b) { return a > b ? a : b; }
+#define max(a, b) (a > b ? a : b )
 
 typedef struct Node {
     int data;
