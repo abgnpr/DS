@@ -25,12 +25,14 @@
 *   Circular Queue
 *   Deque
 *   Priority Queue
+*   Application
+    *   Polynomial
 
 
 ### Recursion
 
 *   Euclidean GCD
-*   Reursive Fibonacci
+*   Recursive Fibonacci
 
 
 ### Trees
@@ -43,10 +45,21 @@
 ### Heaps
 
 *   Max heap using array
-*   Heapsort (descending)
 
 
 ### Graphs
 
-*   Undirected (adjacency list)
+*   Un-directed (adjacency list)
 *   Directed (adjacency list)
+
+### Searching
+
+- Linear Search
+- Binary Search
+
+### Sorting
+
+- Heap Sort (descending)
+- Quick Sort (Partition Exchange Sort)
+- Radix Sort (Bucket Sort)
+- Shell Sort
